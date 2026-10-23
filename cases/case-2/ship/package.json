@@ -1,0 +1,7 @@
+{
+  "name": "task-tracker",
+  "version": "1.0.0",
+  "description": "A tiny to-do list for the terminal. The ship in Code Crew case 2.",
+  "type": "module",
+  "main": "main.js"
+}

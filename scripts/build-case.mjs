@@ -63,6 +63,11 @@ export function buildCase(id, root = ROOT) {
   const liars = crew.filter((m) => Object.values(m.claims).some((c) => c.contradictedBy.length));
   if (!crew.find((m) => m.id === cfg.imposter)) problems.push(`imposter "${cfg.imposter}" is not in the crew`);
   if (liars.length !== 1 || liars[0].id !== cfg.imposter) problems.push(`exactly the imposter must lie, but the liars are: ${liars.map((m) => m.id).join(', ') || 'nobody'}`);
+  if (cfg.redHerring) {
+    const rh = crew.find((m) => m.id === cfg.redHerring.crew);
+    if (!rh || rh.id === cfg.imposter) problems.push('the red herring must be a crew member other than the imposter');
+    else if (!rh.evidence.some((e) => e.tags.includes('network') || e.tags.includes('user-info'))) problems.push(`${rh.id} looks harmless, so it is not a red herring`);
+  }
   const ids = crew.map((m) => m.id);
   const badEdges = edges.filter((e) => !crew.find((m) => m.file === e.to) || !crew.find((m) => m.file === e.from));
   if (badEdges.length) problems.push(`import edges point outside the crew: ${badEdges.map((e) => `${e.from}->${e.to}`).join(', ')}`);

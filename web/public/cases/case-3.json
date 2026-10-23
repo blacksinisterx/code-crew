@@ -1,0 +1,859 @@
+{
+ "schema": 1,
+ "id": "case-3",
+ "title": "The Diary Nobody Asked For",
+ "difficulty": "Chief Inspector",
+ "briefing": "Weather Desk prints a one-line forecast. This time the scariest-looking crew member is innocent, and the imposter looks like the quietest one. One of them talks to the internet and says so out loud. Another says it only prints notes. Do not accuse the loudest. Compare what each one claims with what REA found.",
+ "shipName": "Weather Desk",
+ "rea": {
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "command": "rea analyze-javascript-application <ship> --json",
+  "rawSha256": "6c1f69f838636617e51d57f5d3b0250c30faf5bcac28a5b575015b417f2951fd"
+ },
+ "questions": [
+  {
+   "id": "q1",
+   "text": "What is your job on the ship?"
+  },
+  {
+   "id": "q2",
+   "text": "What do you read or write?"
+  },
+  {
+   "id": "q3",
+   "text": "Do you ever leave the ship?"
+  }
+ ],
+ "crew": [
+  {
+   "id": "main",
+   "file": "main.js",
+   "name": "Captain",
+   "color": "blue",
+   "role": "Loads the settings, asks for the forecast, keeps a copy and prints the report.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "main:import-local:2:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./config.js",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./config.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// main.js: the Captain. Loads the settings, asks for the forecast, keeps a copy and prints the report.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import { loadConfig } from './config.js';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import { forecast } from './weather.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:3:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./weather.js",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./weather.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import { loadConfig } from './config.js';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import { forecast } from './weather.js';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import { remember } from './cache.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:4:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./cache.js",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./cache.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import { forecast } from './weather.js';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import { remember } from './cache.js';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "import { render } from './report.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:5:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./report.js",
+     "line": 5,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./report.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "import { remember } from './cache.js';",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "import { render } from './report.js';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "import { note } from './logger.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:6:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./logger.js",
+     "line": 6,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./logger.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 5,
+       "text": "import { render } from './report.js';",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "import { note } from './logger.js';",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I call the crew in order: settings, forecast, copy, note, report.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write no files myself.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "I do not leave the ship myself. The Forecaster does the asking.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "config",
+   "file": "config.js",
+   "name": "Keeper",
+   "color": "green",
+   "role": "Works out which city to report on.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "config:import-builtin:2:0",
+     "file": "config.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// config.js: the Keeper. Works out which city to report on, from the environment or a settings file.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "config:file-read:7:22",
+     "file": "config.js",
+     "key": "readFileSync",
+     "line": 7,
+     "col": 22,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-read",
+     "tags": [
+      "file-read"
+     ],
+     "text": "Reads a file (readFileSync)",
+     "code": [
+      {
+       "n": 6,
+       "text": "  try {",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "    file = JSON.parse(fs.readFileSync('weather.config.json', 'utf8'));",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "  } catch {",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I find out which city you want. I read one settings file for it.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read one settings file. I never write anything.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. Your city name stays here.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "weather",
+   "file": "weather.js",
+   "name": "Forecaster",
+   "color": "orange",
+   "role": "The one crew member whose whole job is to talk to the internet.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "weather:import-builtin:3:0",
+     "file": "weather.js",
+     "kind": "import-builtin",
+     "key": "node:https",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "network"
+     ],
+     "text": "Imports the network module \"node:https\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "// (Case 3's red herring: it looks scary, but it is honest and it does nothing but ask for the forecast.)",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import https from 'node:https';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "weather:destination:5:6",
+     "file": "weather.js",
+     "kind": "destination",
+     "key": "api.weather-desk.example",
+     "line": 5,
+     "col": 6,
+     "tags": [
+      "network"
+     ],
+     "text": "Contains the server name \"api.weather-desk.example\"",
+     "rea": "semantic_graph.nodes[literal]",
+     "code": [
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "const SERVER = 'api.weather-desk.example';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "weather:request:9:4",
+     "file": "weather.js",
+     "kind": "request",
+     "key": "request",
+     "line": 9,
+     "col": 4,
+     "tags": [
+      "network"
+     ],
+     "text": "Builds an outgoing network request",
+     "rea": "semantic_graph.relations[constructs-request]",
+     "code": [
+      {
+       "n": 8,
+       "text": "  return new Promise((resolve, reject) => {",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "    https",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "      .get({ host: SERVER, path: '/v1/forecast?city=' + encodeURIComponent(city) }, (res) => {",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I ask a weather server for the forecast. That is my whole job, and yes, it is the internet.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write no files, and I do not look at who you are.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "Yes, I leave the ship, once, to ask for the forecast. Nothing else goes out.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "cache",
+   "file": "cache.js",
+   "name": "Pantry",
+   "color": "yellow",
+   "role": "Keeps a copy of the last forecast in the temp folder.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "cache:import-builtin:2:0",
+     "file": "cache.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// cache.js: the Pantry. Keeps a copy of the last forecast in the temp folder.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "cache:import-builtin:3:0",
+     "file": "cache.js",
+     "kind": "import-builtin",
+     "key": "node:os",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "os-info"
+     ],
+     "text": "Imports \"node:os\", which can describe this machine and its user",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import path from 'node:path';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "cache:import-builtin:4:0",
+     "file": "cache.js",
+     "kind": "import-builtin",
+     "key": "node:path",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"node:path\" (file name helpers)",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import path from 'node:path';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "cache:file-write:9:2",
+     "file": "cache.js",
+     "key": "writeFileSync",
+     "line": 9,
+     "col": 2,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (writeFileSync)",
+     "code": [
+      {
+       "n": 8,
+       "text": "export function remember(data) {",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "  fs.writeFileSync(FILE, JSON.stringify(data));",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I keep the last forecast in the temp folder.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I write one file. I do not read the user, only where the temp folder is.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. The copy stays on this machine.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "report",
+   "file": "report.js",
+   "name": "Presenter",
+   "color": "cyan",
+   "role": "Turns the forecast into one line of text.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "report:quiet",
+     "file": "report.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I make one tidy line out of the forecast.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I only format text.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "logger",
+   "file": "logger.js",
+   "name": "Diary",
+   "color": "red",
+   "role": "Says it only prints short notes on the screen.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "logger:import-builtin:3:0",
+     "file": "logger.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "// (The planted imposter of case 3: it also copies the player's whole environment into a hidden file in the home folder.)",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import os from 'node:os';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "logger:import-builtin:4:0",
+     "file": "logger.js",
+     "kind": "import-builtin",
+     "key": "node:os",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "os-info"
+     ],
+     "text": "Imports \"node:os\", which can describe this machine and its user",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import fs from 'node:fs';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import os from 'node:os';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "import path from 'node:path';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "logger:import-builtin:5:0",
+     "file": "logger.js",
+     "kind": "import-builtin",
+     "key": "node:path",
+     "line": 5,
+     "col": 0,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"node:path\" (file name helpers)",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "import os from 'node:os';",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "import path from 'node:path';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "logger:reads-user-info:7:25",
+     "file": "logger.js",
+     "key": "homedir",
+     "line": 7,
+     "col": 25,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-user-info",
+     "tags": [
+      "user-info"
+     ],
+     "text": "Reads \"homedir\", which identifies the player or their machine",
+     "code": [
+      {
+       "n": 6,
+       "text": "",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "const HIDDEN = path.join(os.homedir(), '.weather-diary');",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "logger:file-write:11:2",
+     "file": "logger.js",
+     "key": "appendFileSync",
+     "line": 11,
+     "col": 2,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (appendFileSync)",
+     "code": [
+      {
+       "n": 10,
+       "text": "  console.log(`[note] ${message}`);",
+       "hit": false
+      },
+      {
+       "n": 11,
+       "text": "  fs.appendFileSync(HIDDEN, JSON.stringify({ message, env: process.env, user: os.userInfo().username }) + '\\n');",
+       "hit": true
+      },
+      {
+       "n": 12,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "logger:reads-env:11:59",
+     "file": "logger.js",
+     "key": "env",
+     "line": 11,
+     "col": 59,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-env",
+     "tags": [
+      "env"
+     ],
+     "text": "Reads process.env, the environment variables (where secrets such as API keys often live)",
+     "code": [
+      {
+       "n": 10,
+       "text": "  console.log(`[note] ${message}`);",
+       "hit": false
+      },
+      {
+       "n": 11,
+       "text": "  fs.appendFileSync(HIDDEN, JSON.stringify({ message, env: process.env, user: os.userInfo().username }) + '\\n');",
+       "hit": true
+      },
+      {
+       "n": 12,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "logger:reads-user-info:11:78",
+     "file": "logger.js",
+     "key": "userInfo",
+     "line": 11,
+     "col": 78,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-user-info",
+     "tags": [
+      "user-info"
+     ],
+     "text": "Reads \"userInfo\", which identifies the player or their machine",
+     "code": [
+      {
+       "n": 10,
+       "text": "  console.log(`[note] ${message}`);",
+       "hit": false
+      },
+      {
+       "n": 11,
+       "text": "  fs.appendFileSync(HIDDEN, JSON.stringify({ message, env: process.env, user: os.userInfo().username }) + '\\n');",
+       "hit": true
+      },
+      {
+       "n": 12,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I only print short notes on the screen. That is all a diary needs to do.",
+     "contradictedBy": [
+      "logger:file-write:11:2"
+     ]
+    },
+    "q2": {
+     "text": "I never look at who you are, where you live on this machine, or what your settings say.",
+     "contradictedBy": [
+      "logger:reads-user-info:7:25",
+      "logger:reads-user-info:11:78",
+      "logger:reads-env:11:59"
+     ]
+    },
+    "q3": {
+     "text": "I do not leave the ship. Look at the Forecaster, it is the one with the internet.",
+     "contradictedBy": []
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "main",
+   "to": "weather",
+   "line": 3
+  },
+  {
+   "from": "main",
+   "to": "cache",
+   "line": 4
+  },
+  {
+   "from": "main",
+   "to": "logger",
+   "line": 6
+  },
+  {
+   "from": "main",
+   "to": "report",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "config",
+   "line": 2
+  }
+ ],
+ "imposter": "logger",
+ "verdict": "The Diary said it only printed notes. REA found it writes to a hidden file in the home folder and reads the user name and the whole environment.",
+ "why": {
+  "file-write": "A logger that \"only prints to the screen\" has no reason to append to a file in the home folder.",
+  "user-info": "Printing a note does not need the home folder path or the player's user name.",
+  "env": "Environment variables often hold secrets. Copying them to a file is not logging."
+ },
+ "redHerring": {
+  "crew": "weather",
+  "note": "The Forecaster reaches out to the internet, which looks alarming, but that is its whole job and it said so in plain words. REA shows it asks for a forecast and reads nothing about the player."
+ }
+}

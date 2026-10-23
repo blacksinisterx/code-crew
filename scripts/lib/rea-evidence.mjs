@@ -56,6 +56,15 @@ export function extractEvidence(rea) {
     }
   }
 
+  // 1b. imports whose module name is only worked out while the program runs (REA marks them dynamic-import, unresolved)
+  for (const e of graph.edges) {
+    if (e.relation !== 'imports' || e.properties?.kind !== 'dynamic-import') continue;
+    const l = loc(e);
+    const from = label(nodeById.get(e.source_node_id));
+    if (!l || !from) continue;
+    add(from, { kind: 'dynamic-import', key: e.properties.expression, line: l.start.line, col: l.start.column, tags: ['hidden-code'], text: `Loads a module whose name is only worked out while running: ${e.properties.expression}`, rea: 'graph.edges[imports, dynamic-import]' });
+  }
+
   // 2. network requests built in the code, and the fields they carry
   const semNodes = new Map(sem.nodes.map((x) => [x.node_id, x]));
   for (const r of sem.relations) {
@@ -75,6 +84,15 @@ export function extractEvidence(rea) {
     if (typeof v === 'string' && l && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(v) && !/\.(js|json|txt|md)$/i.test(v)) {
       add(l.source, { kind: 'destination', key: v, line: l.start.line, col: l.start.column, tags: ['network'], text: `Contains the server name "${v}"`, rea: 'semantic_graph.nodes[literal]' });
     }
+  }
+  // strings that are really base64 text (REA reports the literal; recognising and decoding it is our step, and the card says so)
+  for (const x of sem.nodes) {
+    const v = x.kind === 'literal' ? x.properties?.value : null;
+    const l = loc(x);
+    if (typeof v !== 'string' || !l || !/^[A-Za-z0-9+/]{16,}={0,2}$/.test(v) || v.length % 4) continue;
+    const decoded = Buffer.from(v, 'base64').toString('utf8');
+    if (!/^[\x20-\x7e]{6,}$/.test(decoded)) continue;
+    add(l.source, { kind: 'encoded-string', key: v, line: l.start.line, col: l.start.column, tags: ['hidden-code'], text: `Hides a string in base64. REA found the text; decoded here, it reads "${decoded}"`, rea: 'semantic_graph.nodes[literal]' });
   }
   for (const x of graph.nodes) {
     if (x.kind !== 'endpoint') continue;
@@ -96,6 +114,7 @@ export function extractEvidence(rea) {
     else if (FILE_READS.has(prop)) add(l.source, { ...base, kind: 'file-read', tags: ['file-read'], text: `Reads a file (${prop})` });
     else if (FILE_WRITES.has(prop)) add(l.source, { ...base, kind: 'file-write', tags: ['file-write'], text: `Writes a file (${prop})` });
     else if (RUNS_COMMAND.has(prop)) add(l.source, { ...base, kind: 'runs-command', tags: ['runs-command'], text: `Starts another program (${prop})` });
+    else if (prop === 'env') add(l.source, { ...base, kind: 'reads-env', tags: ['env'], text: 'Reads process.env, the environment variables (where secrets such as API keys often live)' });
   }
 
   for (const cards of out.values()) cards.sort((a, b) => a.line - b.line || a.col - b.col);

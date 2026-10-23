@@ -1,0 +1,7 @@
+{
+  "name": "weather-desk",
+  "version": "1.0.0",
+  "description": "A tiny weather report for the terminal. The ship in Code Crew case 3.",
+  "type": "module",
+  "main": "main.js"
+}
