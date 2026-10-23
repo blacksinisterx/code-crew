@@ -1,0 +1,11 @@
+{
+  "name": "code-crew",
+  "private": true,
+  "type": "module",
+  "description": "A detective game: find the imposter hiding in the code. The clues are real findings from REA.",
+  "scripts": {
+    "rea": "node scripts/run-rea.mjs",
+    "build:cases": "node scripts/build-case.mjs",
+    "test": "node --test scripts/"
+  }
+}
