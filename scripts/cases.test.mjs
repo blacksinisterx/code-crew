@@ -37,9 +37,20 @@ for (const id of caseIds) {
   test(`${id}: no file in the ship gives the game away`, () => {
     // clue cards show real lines of code, so a comment like "the planted imposter" would spoil the case
     const cfg = JSON.parse(readFileSync(join(ROOT, 'cases', id, 'case.config.json'), 'utf8'));
-    for (const f of readdirSync(join(ROOT, 'cases', id, cfg.shipDir)).filter((n) => n.endsWith('.js'))) {
+    for (const f of readdirSync(join(ROOT, 'cases', id, cfg.shipDir)).filter((n) => /\.[cm]?js$/.test(n))) {
       assert.doesNotMatch(readFileSync(join(ROOT, 'cases', id, cfg.shipDir, f), 'utf8'), /imposter|impostor|planted|red herring|spoiler/i, `${id}/${f} contains a spoiler word`);
     }
+  });
+
+  test(`${id}: every clue has plain words, and the hints go from a nudge to a name`, () => {
+    const built = loadBuilt(id);
+    for (const m of built.crew) for (const e of m.evidence) assert.ok(e.plain && e.plain.length > 10, `${m.file}:${e.line} has no plain wording`);
+    for (const m of built.crew) for (const claim of Object.values(m.claims)) assert.ok(claim.text.length > 3);
+    assert.equal(built.hints.length, 3);
+    assert.ok(built.plainBriefing.length > 80 && built.realLife.length > 40);
+    const imp = built.crew.find((m) => m.id === built.imposter);
+    assert.match(built.hints[2], new RegExp(imp.name), 'the last hint names the imposter');
+    assert.ok(built.crew.length >= 6, 'a case needs at least six crew');
   });
 
   test(`${id}: exactly the imposter lies, and every lie can be shown with a clue`, () => {

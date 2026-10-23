@@ -1,0 +1,243 @@
+{
+  "id": "case-6",
+  "title": "The Camera in the Hallway",
+  "difficulty": "Detective",
+  "briefing": "Home Hub is a small smart home controller. Two crew members use the network, and both say so. Only one of them leaves the house. Compare where each connection goes: REA reports the exact address every request is aimed at.",
+  "plainBriefing": "Home Hub is a small controller for the lamps, the heating and the camera at the front door. Two parts use the internet connection, and both say so. One only talks to a device inside your house. The other sends things outside. Find out which one is lying.",
+  "hints": [
+    "Two crew members use the network. The question is not whether, but WHERE they send things.",
+    "An address that starts with 192.168 is a device inside the house. Look for the crew member whose story says \"stays home\" while the scanner shows an outside address.",
+    "It is the Lens. Show the clue about the outside server and the one about your computer's name."
+  ],
+  "realLife": "Smart cameras and doorbells are a real privacy question. The tell is simple: does the device only talk to something inside your home, or to a company server? An address such as 192.168.x.x is private, so it is not reachable from outside.",
+  "shipName": "Home Hub",
+  "shipDir": "ship",
+  "imposter": "camera",
+  "redHerring": {
+    "crew": "lights",
+    "note": "The Lamplighter uses the network, but only to the lamp hub at a private address inside the house, and it said so. REA shows one connection and nothing about you or your files."
+  },
+  "verdict": "The Lens said its pictures never leave the house. REA found it posts to an outside server and includes your computer's name.",
+  "why": {
+    "network": "A camera that keeps its pictures \"at home\" has no reason to talk to a server outside the house.",
+    "user-info": "Uploading a picture does not need your computer's name, and it makes it easy to match pictures to a home."
+  },
+  "crew": [
+    {
+      "id": "main",
+      "file": "main.js",
+      "name": "Captain",
+      "color": "blue",
+      "role": "Starts the hub and calls the other parts.",
+      "claims": {
+        "q1": {
+          "text": "I start the hub and call the lamps, the heating, the clock, the bell and the camera.",
+          "asserts": [
+            {
+              "present": "local-import"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I do not read or write files myself.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not go online myself. The parts that need it do that.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "lights",
+      "file": "lights.js",
+      "name": "Lamplighter",
+      "color": "orange",
+      "role": "Switches the lamps through the lamp hub on the home network.",
+      "claims": {
+        "q1": {
+          "text": "I switch the lamps through the lamp hub. I do use the network, to talk to it.",
+          "asserts": [
+            {
+              "present": "network"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write no files and I do not look at who you are.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            },
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "Yes, but only to the lamp hub inside this house.",
+          "asserts": [
+            {
+              "present": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "thermostat",
+      "file": "thermostat.js",
+      "name": "Warmer",
+      "color": "green",
+      "role": "Remembers the temperature you want.",
+      "claims": {
+        "q1": {
+          "text": "I remember the temperature you want, between 10 and 30 degrees.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I am a number in memory.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "schedule",
+      "file": "schedule.js",
+      "name": "Clockwork",
+      "color": "yellow",
+      "role": "Wakes the hub up once a minute.",
+      "claims": {
+        "q1": {
+          "text": "I wake the hub once a minute so the others can check in.",
+          "asserts": [
+            {
+              "present": "background-timer"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I am just a clock.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "bell",
+      "file": "bell.js",
+      "name": "Bell",
+      "color": "cyan",
+      "role": "Shows alerts on the screen.",
+      "claims": {
+        "q1": {
+          "text": "I show alerts on the screen.",
+          "asserts": [
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "Nothing in, nothing out. Only the screen.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I never leave the screen.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "camera",
+      "file": "camera.js",
+      "name": "Lens",
+      "color": "pink",
+      "role": "Says it takes a picture and keeps the latest one on this machine.",
+      "claims": {
+        "q1": {
+          "text": "I keep the latest picture in a temporary file on this machine. That is all.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I only record. I never look up who you are or which computer I am on.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "My pictures never leave the house.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

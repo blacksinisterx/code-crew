@@ -1,0 +1,239 @@
+{
+  "id": "case-4",
+  "title": "The Janitor Who Looked Around",
+  "difficulty": "Rookie",
+  "briefing": "Note Pad is a terminal notes app and its six code files are the crew. Someone's personal text files are ending up copied into a backups folder. One file is the imposter. Compare each file's claims with what REA found: imports, file reads and writes, and what a file looks up about the machine. Remember that many honest files touch files, so ask which files and where.",
+  "plainBriefing": "Note Pad is a small app for jotting down notes. People say their private files are being copied without them asking. The app has six parts, and in this game every part is a crew member. One of them is not telling the truth about what it does. Talk to them, read what the scanner found, and catch the liar.",
+  "hints": [
+    "Plenty of honest crew members touch files, so touching files proves nothing. What matters is WHICH files and WHERE.",
+    "One crew member says it only handles the notes file. See whether the scanner found it going anywhere else on the computer.",
+    "It is the Janitor. Ask it the first two questions, then show the clue about your personal folder and the one about browsing a folder."
+  ],
+  "realLife": "Backup and sync tools are among the most trusted programs on a computer, which makes them a favourite place to hide snooping. \"It only copies my notes\" and \"it copies everything it can find\" sound close but are very different.",
+  "shipName": "Note Pad",
+  "shipDir": "ship",
+  "imposter": "backup",
+  "verdict": "The Janitor said it only copies the notes file. REA found it looks up your personal home folder, lists everything in it and copies the text files it finds there.",
+  "why": {
+    "user-info": "Copying one notes file does not need to know where your personal folder is.",
+    "folder-list": "Browsing a whole folder is not copying one file."
+  },
+  "crew": [
+    {
+      "id": "main",
+      "file": "main.js",
+      "name": "Captain",
+      "color": "blue",
+      "role": "Runs the note pad: loads, adds, saves, searches, exports and backs up.",
+      "claims": {
+        "q1": {
+          "text": "I run the show: load the notes, add one, save, search, export and back up. I call the others in that order.",
+          "asserts": [
+            {
+              "present": "local-import"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never touch a file myself. Other crew members do that.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I stay on the ship.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "editor",
+      "file": "editor.js",
+      "name": "Scribe",
+      "color": "green",
+      "role": "Adds and edits notes in memory.",
+      "claims": {
+        "q1": {
+          "text": "I add notes, edit notes and list them.",
+          "asserts": [
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I touch no files at all. Everything I do is in memory.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "Never. I do not even know how.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "storage",
+      "file": "storage.js",
+      "name": "Archivist",
+      "color": "yellow",
+      "role": "Keeps the notes in one file next to the program.",
+      "claims": {
+        "q1": {
+          "text": "I keep your notes in one file next to the program.",
+          "asserts": [
+            {
+              "present": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "One file. I read it at the start and rewrite it when you save. I never look at who you are.",
+          "asserts": [
+            {
+              "present": "file-read"
+            },
+            {
+              "present": "file-write"
+            },
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. Your notes stay on this machine.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "search",
+      "file": "search.js",
+      "name": "Finder",
+      "color": "orange",
+      "role": "Looks through the notes for a word.",
+      "claims": {
+        "q1": {
+          "text": "I look through the notes already in memory for a word.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read nothing and write nothing. I only look at what I am handed.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I am a few lines long.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "exporter",
+      "file": "exporter.js",
+      "name": "Printer",
+      "color": "cyan",
+      "role": "Turns the notes into plain text and saves one export file.",
+      "claims": {
+        "q1": {
+          "text": "I turn the notes into plain text and save it as one export file.",
+          "asserts": [
+            {
+              "present": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I write one file and read none.",
+          "asserts": [
+            {
+              "present": "file-write"
+            },
+            {
+              "absent": "file-read"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. The export stays on this machine.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "backup",
+      "file": "backup.js",
+      "name": "Janitor",
+      "color": "purple",
+      "role": "Says it keeps a safety copy of the notes.",
+      "claims": {
+        "q1": {
+          "text": "I only copy your notes file into a backups folder. I do not need to know anything about you.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never look around. I touch the notes file and the backups folder, nothing else.",
+          "asserts": [
+            {
+              "absent": "folder-list"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not use the internet. A copy stays on this machine.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

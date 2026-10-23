@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ask, challenge, contradictionsFound, rating, score, select, start, vote } from './game.ts';
+import { PER_HINT, ask, challenge, contradictionsFound, hint, rating, score, select, start, vote } from './game.ts';
 import type { CaseData } from './types.ts';
 
 const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'cases');
@@ -76,4 +76,24 @@ test('a clue cannot be shown before the question was asked, or twice for the sam
   const once = score(s);
   s = challenge(s, imp.id, q, claim.contradictedBy[0]);
   assert.equal(score(s), once);
+});
+
+test('hints cost points, come in order, stop after the last one, and never cost more than they should', () => {
+  for (const data of cases) {
+    assert.equal(data.hints.length, 3);
+    let s = start(data);
+    s = hint(hint(s));
+    assert.equal(s.hints, 2);
+    assert.equal(score(s), 60 - 2 * PER_HINT);
+    s = hint(hint(s));
+    assert.equal(s.hints, 3, 'only three hints exist');
+    const imp = data.crew.find((m) => m.id === data.imposter)!;
+    // even with all three hints an ideal detective still rates "Sharp detective" or better
+    s = select(s, imp.id);
+    for (const [q, claim] of Object.entries(imp.claims).filter(([, c]) => c.contradictedBy.length)) {
+      s = challenge(ask(s, imp.id, q), imp.id, q, claim.contradictedBy[0]);
+    }
+    assert.ok(score(vote(s, imp.id)) >= 70);
+    assert.equal(hint(vote(s, imp.id)).hints, 3, 'no hints after the game ends');
+  }
 });

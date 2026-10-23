@@ -3,6 +3,13 @@
   "title": "The Diary Nobody Asked For",
   "difficulty": "Chief Inspector",
   "briefing": "Weather Desk prints a one-line forecast. This time the scariest-looking crew member is innocent, and the imposter looks like the quietest one. One of them talks to the internet and says so out loud. Another says it only prints notes. Do not accuse the loudest. Compare what each one claims with what REA found.",
+  "plainBriefing": "Weather Desk shows a one-line forecast. This time the scariest-looking crew member is innocent. One of them talks to the internet on purpose and says so honestly. The liar is a quiet one that says it only writes notes on the screen. Do not accuse the loudest.",
+  "hints": [
+    "Being scary is not the same as lying. A part that connects to the internet and admits it is telling the truth.",
+    "Look for the crew member that says it only prints on the screen, then see whether the scanner found it writing into a file or reading private settings.",
+    "It is Diary. It writes a hidden file in your personal folder and reads your private settings. Show both clues."
+  ],
+  "realLife": "A log file that quietly collects your user name and private settings is a classic leak. The question to ask of any app is not \"does it use the internet?\" but \"does what it does match what it says?\"",
   "shipName": "Weather Desk",
   "shipDir": "ship",
   "imposter": "logger",
@@ -18,57 +25,225 @@
   },
   "crew": [
     {
-      "id": "main", "file": "main.js", "name": "Captain", "color": "blue",
+      "id": "main",
+      "file": "main.js",
+      "name": "Captain",
+      "color": "blue",
       "role": "Loads the settings, asks for the forecast, keeps a copy and prints the report.",
       "claims": {
-        "q1": { "text": "I call the crew in order: settings, forecast, copy, note, report.", "asserts": [{ "present": "local-import" }] },
-        "q2": { "text": "I read and write no files myself.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
-        "q3": { "text": "I do not leave the ship myself. The Forecaster does the asking.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I call the crew in order: settings, forecast, copy, note, report.",
+          "asserts": [
+            {
+              "present": "local-import"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write no files myself.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not leave the ship myself. The Forecaster does the asking.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "config", "file": "config.js", "name": "Keeper", "color": "green",
+      "id": "config",
+      "file": "config.js",
+      "name": "Keeper",
+      "color": "green",
       "role": "Works out which city to report on.",
       "claims": {
-        "q1": { "text": "I find out which city you want. I read one settings file for it.", "asserts": [{ "present": "file-read" }] },
-        "q2": { "text": "I read one settings file. I never write anything.", "asserts": [{ "present": "file-read" }, { "absent": "file-write" }] },
-        "q3": { "text": "No. Your city name stays here.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I find out which city you want. I read one settings file for it.",
+          "asserts": [
+            {
+              "present": "file-read"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read one settings file and one private setting that holds the city name. I never write anything.",
+          "asserts": [
+            {
+              "present": "file-read"
+            },
+            {
+              "present": "env"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. Your city name stays here.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "weather", "file": "weather.js", "name": "Forecaster", "color": "orange",
+      "id": "weather",
+      "file": "weather.js",
+      "name": "Forecaster",
+      "color": "orange",
       "role": "The one crew member whose whole job is to talk to the internet.",
       "claims": {
-        "q1": { "text": "I ask a weather server for the forecast. That is my whole job, and yes, it is the internet.", "asserts": [{ "present": "network" }] },
-        "q2": { "text": "I read and write no files, and I do not look at who you are.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }, { "absent": "user-info" }] },
-        "q3": { "text": "Yes, I leave the ship, once, to ask for the forecast. Nothing else goes out.", "asserts": [{ "present": "network" }] }
+        "q1": {
+          "text": "I ask a weather server for the forecast. That is my whole job, and yes, it is the internet.",
+          "asserts": [
+            {
+              "present": "network"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write no files, and I do not look at who you are.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            },
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "Yes, I leave the ship, once, to ask for the forecast. Nothing else goes out.",
+          "asserts": [
+            {
+              "present": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "cache", "file": "cache.js", "name": "Pantry", "color": "yellow",
+      "id": "cache",
+      "file": "cache.js",
+      "name": "Pantry",
+      "color": "yellow",
       "role": "Keeps a copy of the last forecast in the temp folder.",
       "claims": {
-        "q1": { "text": "I keep the last forecast in the temp folder.", "asserts": [{ "present": "file-write" }] },
-        "q2": { "text": "I write one file. I do not read the user, only where the temp folder is.", "asserts": [{ "present": "file-write" }, { "absent": "user-info" }] },
-        "q3": { "text": "No. The copy stays on this machine.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I keep the last forecast in the temp folder.",
+          "asserts": [
+            {
+              "present": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I write one file. I do not read the user, only where the temp folder is.",
+          "asserts": [
+            {
+              "present": "file-write"
+            },
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. The copy stays on this machine.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "report", "file": "report.js", "name": "Presenter", "color": "cyan",
+      "id": "report",
+      "file": "report.js",
+      "name": "Presenter",
+      "color": "cyan",
       "role": "Turns the forecast into one line of text.",
       "claims": {
-        "q1": { "text": "I make one tidy line out of the forecast.", "asserts": [{ "absent": "user-info" }] },
-        "q2": { "text": "I read and write nothing.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
-        "q3": { "text": "No. I only format text.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I make one tidy line out of the forecast.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I only format text.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "logger", "file": "logger.js", "name": "Diary", "color": "red",
+      "id": "logger",
+      "file": "logger.js",
+      "name": "Diary",
+      "color": "red",
       "role": "Says it only prints short notes on the screen.",
       "claims": {
-        "q1": { "text": "I only print short notes on the screen. That is all a diary needs to do.", "asserts": [{ "absent": "file-write" }] },
-        "q2": { "text": "I never look at who you are, where you live on this machine, or what your settings say.", "asserts": [{ "absent": "user-info" }, { "absent": "env" }] },
-        "q3": { "text": "I do not leave the ship. Look at the Forecaster, it is the one with the internet.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I only print short notes on the screen. That is all a diary needs to do.",
+          "asserts": [
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never look at who you are, where you live on this machine, or what your settings say.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            },
+            {
+              "absent": "env"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not leave the ship. Look at the Forecaster, it is the one with the internet.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     }
   ]

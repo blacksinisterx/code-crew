@@ -6,8 +6,26 @@
   "crew": 6
  },
  {
+  "id": "case-4",
+  "title": "The Janitor Who Looked Around",
+  "difficulty": "Rookie",
+  "crew": 6
+ },
+ {
   "id": "case-2",
   "title": "The Quiet Courier",
+  "difficulty": "Detective",
+  "crew": 6
+ },
+ {
+  "id": "case-5",
+  "title": "The Helpful Updater",
+  "difficulty": "Detective",
+  "crew": 6
+ },
+ {
+  "id": "case-6",
+  "title": "The Camera in the Hallway",
   "difficulty": "Detective",
   "crew": 6
  },
@@ -16,5 +34,17 @@
   "title": "The Diary Nobody Asked For",
   "difficulty": "Chief Inspector",
   "crew": 6
+ },
+ {
+  "id": "case-7",
+  "title": "The Health Check",
+  "difficulty": "Chief Inspector",
+  "crew": 6
+ },
+ {
+  "id": "case-8",
+  "title": "The Night Shift",
+  "difficulty": "Master",
+  "crew": 7
  }
 ]

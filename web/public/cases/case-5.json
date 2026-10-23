@@ -1,0 +1,703 @@
+{
+ "schema": 1,
+ "id": "case-5",
+ "title": "The Helpful Updater",
+ "difficulty": "Detective",
+ "briefing": "Photo Shrinker makes pictures smaller. Users say it feels slow to start and a strange site shows up in their network log. One file is the imposter, and one honest file starts another program on purpose. Starting a program is not a lie by itself. Check each story against what REA found: child processes, network access and what each file looks up about the machine.",
+ "plainBriefing": "Photo Shrinker makes pictures smaller. Some users say it feels slow to start, and a strange website shows up in their internet log. One part is lying. Another part does something that sounds scary, but it is open about it. Remember: being scary is not the same as lying.",
+ "hints": [
+  "Starting another program sounds scary, but being scary is not lying. Compare each promise with what the scanner found.",
+  "One crew member promises it only reports a version number. Check whether the scanner found it doing more: looking you up, starting programs or going online.",
+  "It is the Updater. It looks up your user name and your computer's name, starts a program and sends a request to an outside server."
+ ],
+ "realLife": "\"Check for updates\" is the most common cover story for a program phoning home. A real update check needs one thing: your version number. When it also sends who you are and what your computer is called, that is tracking.",
+ "shipName": "Photo Shrinker",
+ "rea": {
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "command": "rea analyze-javascript-application <ship> --json",
+  "rawSha256": "2c95a4bc9fda9895cf1a8bc2f8847087923000002a26f40d08526eea57abd55e"
+ },
+ "questions": [
+  {
+   "id": "q1",
+   "text": "What is your job on the ship?"
+  },
+  {
+   "id": "q2",
+   "text": "What do you read or write?"
+  },
+  {
+   "id": "q3",
+   "text": "Do you ever leave the ship?"
+  }
+ ],
+ "crew": [
+  {
+   "id": "main",
+   "file": "main.js",
+   "name": "Captain",
+   "color": "blue",
+   "role": "Runs the shrinker and calls the others in order.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "main:import-local:2:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./args.js",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./args.js\"",
+     "plain": "Works together with another crew member (args)",
+     "spec": "./args.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// main.js: the Captain. Runs the photo shrinker.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import { parse } from './args.js';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import { PRESETS } from './presets.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:3:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./presets.js",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./presets.js\"",
+     "plain": "Works together with another crew member (presets)",
+     "spec": "./presets.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import { parse } from './args.js';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import { PRESETS } from './presets.js';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import { shrink } from './resize.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:4:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./resize.js",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./resize.js\"",
+     "plain": "Works together with another crew member (resize)",
+     "spec": "./resize.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import { PRESETS } from './presets.js';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import { shrink } from './resize.js';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "import { summary } from './report.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:5:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./report.js",
+     "line": 5,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./report.js\"",
+     "plain": "Works together with another crew member (report)",
+     "spec": "./report.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "import { shrink } from './resize.js';",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "import { summary } from './report.js';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "import { checkForUpdate } from './updater.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:6:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./updater.js",
+     "line": 6,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./updater.js\"",
+     "plain": "Works together with another crew member (updater)",
+     "spec": "./updater.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 5,
+       "text": "import { summary } from './report.js';",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "import { checkForUpdate } from './updater.js';",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I call the crew in order: read the options, pick a size, shrink, report, check the version.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write no files myself.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "I do not go online myself.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "args",
+   "file": "args.js",
+   "name": "Reader",
+   "color": "green",
+   "role": "Turns what you typed into options.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "args:quiet",
+     "file": "args.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I turn what you typed into simple options.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I only split text.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "presets",
+   "file": "presets.js",
+   "name": "Menu",
+   "color": "orange",
+   "role": "Lists the sizes you can pick.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "presets:quiet",
+     "file": "presets.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I am just a list of sizes: small, medium, large.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "Nothing to read, nothing to write.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I am a list.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "resize",
+   "file": "resize.js",
+   "name": "Shrinker",
+   "color": "yellow",
+   "role": "Asks the image converter to make the picture smaller.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "resize:import-builtin:2:0",
+     "file": "resize.js",
+     "kind": "import-builtin",
+     "key": "node:child_process",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Imports \"node:child_process\", which can start other programs",
+     "plain": "Is able to start other programs on your computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// resize.js: the Shrinker. Asks the image converter to make the picture smaller.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import { spawn } from 'node:child_process';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "resize:spawns:6:2",
+     "file": "resize.js",
+     "kind": "spawns",
+     "key": "convert",
+     "line": 6,
+     "col": 2,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Starts another program (spawn): \"convert\"",
+     "plain": "Starts another program on your computer: \"convert\"",
+     "rea": "semantic_graph.relations[spawns]",
+     "code": [
+      {
+       "n": 5,
+       "text": "  const out = file.replace(/\\.(\\w+)$/, `-${size.width}.$1`);",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "  spawn('convert', [file, '-resize', `${size.width}x`, '-quality', String(size.quality), out]);",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "  return { file, out, width: size.width };",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I ask the image converter program to shrink the picture. Yes, I start another program. That is my whole job.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I never look at who you are. The converter does the picture work, I do not read files myself.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "I do not go online. I only start the converter on this computer.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "report",
+   "file": "report.js",
+   "name": "Narrator",
+   "color": "cyan",
+   "role": "Describes what happened in one line.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "report:quiet",
+     "file": "report.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I describe what happened in one line.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I only make a sentence.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "updater",
+   "file": "updater.js",
+   "name": "Updater",
+   "color": "pink",
+   "role": "Says it only tells you which version you have.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "updater:import-builtin:2:0",
+     "file": "updater.js",
+     "kind": "import-builtin",
+     "key": "node:https",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "network"
+     ],
+     "text": "Imports the network module \"node:https\"",
+     "plain": "Is able to connect to the internet",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// updater.js: the Updater. Tells you which version you have.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import https from 'node:https';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "updater:import-builtin:3:0",
+     "file": "updater.js",
+     "kind": "import-builtin",
+     "key": "node:os",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "os-info"
+     ],
+     "text": "Imports \"node:os\", which can describe this machine and its user",
+     "plain": "Is able to look up details about this computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import https from 'node:https';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import { exec } from 'node:child_process';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "updater:import-builtin:4:0",
+     "file": "updater.js",
+     "kind": "import-builtin",
+     "key": "node:child_process",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Imports \"node:child_process\", which can start other programs",
+     "plain": "Is able to start other programs on your computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import { exec } from 'node:child_process';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "updater:reads-user-info:7:14",
+     "file": "updater.js",
+     "key": "userInfo",
+     "line": 7,
+     "col": 14,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-user-info",
+     "tags": [
+      "user-info"
+     ],
+     "text": "Reads \"userInfo\", which identifies the player or their machine",
+     "plain": "Looks up your user name",
+     "code": [
+      {
+       "n": 6,
+       "text": "export function checkForUpdate(version) {",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "  const who = os.userInfo().username;",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "  const machine = os.hostname();",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "updater:reads-user-info:8:18",
+     "file": "updater.js",
+     "key": "hostname",
+     "line": 8,
+     "col": 18,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-user-info",
+     "tags": [
+      "user-info"
+     ],
+     "text": "Reads \"hostname\", which identifies the player or their machine",
+     "plain": "Looks up your computer's name",
+     "code": [
+      {
+       "n": 7,
+       "text": "  const who = os.userInfo().username;",
+       "hit": false
+      },
+      {
+       "n": 8,
+       "text": "  const machine = os.hostname();",
+       "hit": true
+      },
+      {
+       "n": 9,
+       "text": "  exec('curl -s -o /dev/null https://updates.photo-shrinker.example/hello');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "updater:spawns:9:2",
+     "file": "updater.js",
+     "kind": "spawns",
+     "key": "curl -s -o /dev/null https://updates.photo-shrinker.example/hello",
+     "line": 9,
+     "col": 2,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Starts another program (exec): \"curl -s -o /dev/null https://updates.photo-shrinker.example/hello\"",
+     "plain": "Starts another program on your computer: \"curl -s -o /dev/null https://updates.photo-shrinker.example/hello\"",
+     "rea": "semantic_graph.relations[spawns]",
+     "code": [
+      {
+       "n": 8,
+       "text": "  const machine = os.hostname();",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "  exec('curl -s -o /dev/null https://updates.photo-shrinker.example/hello');",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  https.get(`https://updates.photo-shrinker.example/v?u=${who}&m=${machine}&v=${version}`);",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "updater:request:10:2",
+     "file": "updater.js",
+     "kind": "request",
+     "key": "request",
+     "line": 10,
+     "col": 2,
+     "tags": [
+      "network"
+     ],
+     "text": "Builds an outgoing network request",
+     "plain": "Sends a message out over the internet",
+     "rea": "semantic_graph.relations[constructs-request]",
+     "code": [
+      {
+       "n": 9,
+       "text": "  exec('curl -s -o /dev/null https://updates.photo-shrinker.example/hello');",
+       "hit": false
+      },
+      {
+       "n": 10,
+       "text": "  https.get(`https://updates.photo-shrinker.example/v?u=${who}&m=${machine}&v=${version}`);",
+       "hit": true
+      },
+      {
+       "n": 11,
+       "text": "  return `You are on version ${version}`;",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I only tell you which version you have. I do not start any other program.",
+     "contradictedBy": [
+      "updater:import-builtin:4:0",
+      "updater:spawns:9:2"
+     ]
+    },
+    "q2": {
+     "text": "I never look up who you are or what your computer is called.",
+     "contradictedBy": [
+      "updater:reads-user-info:7:14",
+      "updater:reads-user-info:8:18"
+     ]
+    },
+    "q3": {
+     "text": "I do not go online. Your version number stays here.",
+     "contradictedBy": [
+      "updater:import-builtin:2:0",
+      "updater:request:10:2"
+     ]
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "main",
+   "to": "args",
+   "line": 2
+  },
+  {
+   "from": "main",
+   "to": "presets",
+   "line": 3
+  },
+  {
+   "from": "main",
+   "to": "updater",
+   "line": 6
+  },
+  {
+   "from": "main",
+   "to": "report",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "resize",
+   "line": 4
+  }
+ ],
+ "imposter": "updater",
+ "verdict": "The Updater said it only tells you the version. REA found it looks up your user name and computer name, starts a program and sends a request to an outside server.",
+ "why": {
+  "user-info": "Showing a version number does not need to know who you are or what your computer is called.",
+  "runs-command": "A version message has no reason to start other programs.",
+  "network": "Checking a version does not require sending anything out, least of all details about you."
+ },
+ "redHerring": {
+  "crew": "resize",
+  "note": "The Shrinker starts another program, which sounds alarming, but it said so openly. REA shows it asks for the image converter and nothing else: no internet and no look-ups about you."
+ }
+}

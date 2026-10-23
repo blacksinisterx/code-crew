@@ -1,0 +1,247 @@
+{
+  "id": "case-7",
+  "title": "The Health Check",
+  "difficulty": "Chief Inspector",
+  "briefing": "Pass Vault is a password locker, written in CommonJS (require) instead of import; REA reads both. The honest crew members touch very sensitive things, so scrutiny matters. One file claims to be a harmless counter. Compare environment reads, user look-ups and network access with the stories, and do not accuse the one that starts a program openly.",
+  "plainBriefing": "Pass Vault keeps your passwords locked in a single file. Passwords are the most precious thing a program can touch, so every part gets a careful look. One part says it only counts weak passwords. Another admits to starting a tiny program. Only one of them is lying.",
+  "hints": [
+    "Starting a tiny program to copy to the clipboard is openly stated, so it is not a lie. Look at the crew members that promise to stay quiet.",
+    "The crew member that promises \"only counting\" also reads private settings stored on your computer. Look for the clue about private settings.",
+    "It is the Doctor. It reads a private token, looks up your user name and sends them to an outside server."
+  ],
+  "realLife": "A \"health check\" that quietly sends your user name and a secret token to a server is exactly how credentials leak. Password tools deserve extra suspicion: they should talk to nothing except your own disk.",
+  "shipName": "Pass Vault",
+  "shipDir": "ship",
+  "imposter": "health",
+  "redHerring": {
+    "crew": "clipboard",
+    "note": "The Courier starts a program, which sounds alarming, but it said so. REA shows one small program started on this computer, no internet and no look-ups about you."
+  },
+  "verdict": "The Doctor said it only counts short passwords and never leaves your computer. REA found it reads a private token, looks up your user name and sends a request to an outside server.",
+  "why": {
+    "env": "Counting short passwords does not need a private token from your computer's settings.",
+    "user-info": "A count is a number. It does not need your user name.",
+    "network": "A result that \"never leaves your computer\" has no reason to be sent to a server."
+  },
+  "crew": [
+    {
+      "id": "main",
+      "file": "main.cjs",
+      "name": "Captain",
+      "color": "blue",
+      "role": "Runs the locker and calls the other parts.",
+      "claims": {
+        "q1": {
+          "text": "I open the vault, make a password, rate it, copy it and run the health check.",
+          "asserts": [
+            {
+              "present": "local-import"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never touch a file myself. The Safe does that.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not go online myself.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "vault",
+      "file": "vault.cjs",
+      "name": "Safe",
+      "color": "yellow",
+      "role": "Keeps the passwords scrambled in one file.",
+      "claims": {
+        "q1": {
+          "text": "I keep your passwords scrambled in one file.",
+          "asserts": [
+            {
+              "present": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write one file, and I never look at who you are.",
+          "asserts": [
+            {
+              "present": "file-read"
+            },
+            {
+              "present": "file-write"
+            },
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. The file stays on this machine.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "generator",
+      "file": "generator.cjs",
+      "name": "Dice",
+      "color": "green",
+      "role": "Makes a random password.",
+      "claims": {
+        "q1": {
+          "text": "I roll the dice and make a random password.",
+          "asserts": [
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I only make random letters.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "strength",
+      "file": "strength.cjs",
+      "name": "Meter",
+      "color": "orange",
+      "role": "Scores a password from 0 to 4.",
+      "claims": {
+        "q1": {
+          "text": "I score a password from 0 to 4.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I am arithmetic.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "clipboard",
+      "file": "clipboard.cjs",
+      "name": "Courier",
+      "color": "cyan",
+      "role": "Puts a password on the clipboard.",
+      "claims": {
+        "q1": {
+          "text": "I put a password on the clipboard by starting one tiny program. Yes, I start a program.",
+          "asserts": [
+            {
+              "present": "runs-command"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write no files and I never look at who you are.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            },
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. The clipboard is on this computer.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "health",
+      "file": "health.cjs",
+      "name": "Doctor",
+      "color": "pink",
+      "role": "Says it only counts how many passwords are short.",
+      "claims": {
+        "q1": {
+          "text": "I just count how many passwords are short. I never read your settings.",
+          "asserts": [
+            {
+              "absent": "env"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I only count. I never look up who you are.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "My count never leaves your computer.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

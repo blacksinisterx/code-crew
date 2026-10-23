@@ -5,6 +5,7 @@ export const BASE_SCORE = 60;
 export const PER_CONTRADICTION = 20;
 export const PER_QUESTION = 4;
 export const PER_WRONG_CLUE = 10;
+export const PER_HINT = 5;
 export const PER_WRONG_VOTE = 20;
 export const MAX_WRONG_VOTES = 2; // the second wrong vote lets the imposter win
 
@@ -16,6 +17,7 @@ export interface GameState {
   asked: Record<string, string[]>;
   caught: Record<string, Record<string, string>>;
   wrongClues: number;
+  hints: number;
   asks: number;
   ejected: string[];
   wrongVotes: number;
@@ -25,8 +27,11 @@ export interface GameState {
 }
 
 export function start(data: CaseData): GameState {
-  return { data, selected: null, asked: {}, caught: {}, wrongClues: 0, asks: 0, ejected: [], wrongVotes: 0, outcome: 'playing', feedback: null, lastVote: null };
+  return { data, selected: null, asked: {}, caught: {}, wrongClues: 0, hints: 0, asks: 0, ejected: [], wrongVotes: 0, outcome: 'playing', feedback: null, lastVote: null };
 }
+
+// Hints go from a nudge to a name, and each one costs points.
+export const hint = (s: GameState): GameState => (s.outcome === 'playing' && s.hints < s.data.hints.length ? { ...s, hints: s.hints + 1 } : s);
 
 export const select = (s: GameState, crewId: string): GameState => (s.outcome === 'playing' && !s.ejected.includes(crewId) ? { ...s, selected: crewId, feedback: null } : s);
 
@@ -58,7 +63,7 @@ export function vote(s: GameState, crewId: string): GameState {
 export const contradictionsFound = (s: GameState) => Object.values(s.caught).reduce((n, q) => n + Object.keys(q).length, 0);
 
 export function score(s: GameState): number {
-  const raw = BASE_SCORE + PER_CONTRADICTION * contradictionsFound(s) - PER_QUESTION * s.asks - PER_WRONG_CLUE * s.wrongClues - PER_WRONG_VOTE * s.wrongVotes;
+  const raw = BASE_SCORE + PER_CONTRADICTION * contradictionsFound(s) - PER_QUESTION * s.asks - PER_WRONG_CLUE * s.wrongClues - PER_HINT * s.hints - PER_WRONG_VOTE * s.wrongVotes;
   return Math.max(0, Math.min(100, raw));
 }
 

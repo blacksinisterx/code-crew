@@ -2,13 +2,26 @@ import { useEffect, useMemo, useState } from 'react';
 import { Board } from './Board.tsx';
 import { CrewBot } from './CrewBot.tsx';
 import { Suspect } from './Suspect.tsx';
-import { MAX_WRONG_VOTES, ask, challenge, score, select, vote } from './game.ts';
+import { ModeSwitch } from './Clue.tsx';
+import { MAX_WRONG_VOTES, PER_HINT, ask, challenge, hint, score, select, vote } from './game.ts';
 import type { GameState } from './game.ts';
+import type { Mode } from './types.ts';
 
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function CaseView({ game, update, onDone, onExit }: { game: GameState; update: (f: (g: GameState) => GameState) => void; onDone: () => void; onExit: () => void }) {
+// One plain sentence saying what to do next, so a first-time player is never stuck.
+function coachLine(game: GameState, name: string | undefined): string {
+  const asked = game.selected ? game.asked[game.selected] ?? [] : [];
+  const caught = Object.keys(game.caught).length > 0;
+  if (!game.selected) return caught ? 'You have caught a liar. Check the others too, or call the vote when you are sure.' : 'Step 1. Tap a crew member on the ship to meet them.';
+  if (!asked.length) return `Step 2. Ask ${name} a question and listen to what they claim.`;
+  if (!Object.keys(game.caught[game.selected] ?? {}).length) return `Step 3. Does ${name}'s story match what the scanner found? If not, press "Present a clue" and pick the finding that proves it. If it does, try someone else.`;
+  return `${name} was caught lying. Question the others or call the vote.`;
+}
+
+export function CaseView({ game, mode, onMode, update, onDone, onExit }: { game: GameState; mode: Mode; onMode: (m: Mode) => void; update: (f: (g: GameState) => GameState) => void; onDone: () => void; onExit: () => void }) {
   const { data } = game;
+  const detective = mode === 'detective';
   const [briefing, setBriefing] = useState(true);
   const [voting, setVoting] = useState(false);
   const [pick, setPick] = useState<string | null>(null);
@@ -53,25 +66,40 @@ export function CaseView({ game, update, onDone, onExit }: { game: GameState; up
           <button className="btn small ghost" onClick={onExit}>All cases</button>
         </div>
       </header>
+      <ModeSwitch mode={mode} onChange={onMode} />
 
       {briefing && (
         <div className="panel briefing">
-          <p><b>Briefing.</b> {data.briefing}</p>
+          <p><b>Briefing.</b> {detective ? data.plainBriefing : data.briefing}</p>
           <button className="btn" onClick={() => setBriefing(false)}>Start investigating</button>
+        </div>
+      )}
+
+      {detective && !briefing && <p className="coach" role="status">{coachLine(game, crew?.name)}</p>}
+      {game.hints > 0 && (
+        <div className="panel hintbox" aria-live="polite">
+          {data.hints.slice(0, game.hints).map((h, i) => <p key={i}><b>Hint {i + 1}.</b> {h}</p>)}
         </div>
       )}
 
       <div className="layout">
         <div>
-          <Board data={data} selected={game.selected} ejected={game.ejected} caught={caught} onSelect={(id) => update((g) => select(g, id))} />
-          <div className="legend"><span><i />a dashed cable means &ldquo;imports&rdquo; (found by REA)</span><span>Click a crew member to inspect their file.</span></div>
+          <Board data={data} mode={mode} selected={game.selected} ejected={game.ejected} caught={caught} onSelect={(id) => update((g) => select(g, id))} />
+          <div className="legend">{detective
+            ? <><span><i />a dotted cable means &ldquo;these two parts work together&rdquo;</span><span>Tap a crew member to meet them.</span></>
+            : <><span><i />a dashed cable means &ldquo;imports&rdquo; (found by REA)</span><span>Click a crew member to inspect their file.</span></>}</div>
         </div>
-        <Suspect game={game} crew={crew}
+        <Suspect game={game} crew={crew} mode={mode}
           onAsk={(c, q) => update((g) => ask(g, c, q))}
           onChallenge={(c, q, e) => update((g) => challenge(g, c, q, e))} />
       </div>
 
-      <div className="actions"><button className="btn alert" onClick={() => { setPick(null); setVoting(true); }}>Call the vote</button></div>
+      <div className="actions">
+        <button className="btn ghost" disabled={game.hints >= data.hints.length} onClick={() => update(hint)}>
+          {game.hints >= data.hints.length ? 'No more hints' : `Need a hint? (-${PER_HINT} points)`}
+        </button>
+        <button className="btn alert" onClick={() => { setPick(null); setVoting(true); }}>Call the vote</button>
+      </div>
 
       {voting && (
         <div className="scrim" role="dialog" aria-modal="true" aria-labelledby="vote-h">
@@ -82,7 +110,7 @@ export function CaseView({ game, update, onDone, onExit }: { game: GameState; up
               {data.crew.map((m) => (
                 <button key={m.id} className="pick" aria-pressed={pick === m.id} disabled={game.ejected.includes(m.id)} onClick={() => setPick(m.id)}>
                   <CrewBot color={m.color} state={game.ejected.includes(m.id) ? 'out' : 'idle'} title={m.name} />
-                  <span>{m.name}</span><small>{m.file}</small>
+                  <span>{m.name}</span>{!detective && <small>{m.file}</small>}
                 </button>
               ))}
             </div>

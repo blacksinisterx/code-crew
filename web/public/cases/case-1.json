@@ -4,6 +4,13 @@
  "title": "The Telemetry Leak",
  "difficulty": "Rookie",
  "briefing": "The Mini Station is a tiny score-keeping game, and its crew are its six code files. Players say their high scores are showing up where they should not. One of the crew is an imposter. Read the evidence REA found in the code, question the crew, catch the one whose story does not match, then call the vote.",
+ "plainBriefing": "Mini Station is a small number game. Players noticed that their details are ending up somewhere they should not. The app is made of six small parts, and in this game each part is a crew member. One of them is lying about what it really does. Talk to them, look at what the scanner found, and catch the liar.",
+ "hints": [
+  "Not everyone is honest. Compare what each crew member SAYS with what the scanner FOUND. Start with the ones whose story is a promise (\"never\", \"nothing\", \"only\").",
+  "Look for the crew member who says it only counts or stores things inside the game, then check whether the scanner found it reaching outside or looking up who you are.",
+  "It is Telemetry. Ask it the first and third question, then show the clue about your details and the clue about the internet."
+ ],
+ "realLife": "Plenty of real apps count how you use them. That is fine until they also send who you are. Checking what a program connects to and what it looks up about you is exactly how security people spot it.",
  "shipName": "Mini Station",
  "rea": {
   "tool": "rea-agents",
@@ -45,6 +52,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./engine.js\"",
+     "plain": "Works together with another crew member (engine)",
+     "spec": "./engine.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -75,6 +84,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./input.js\"",
+     "plain": "Works together with another crew member (input)",
+     "spec": "./input.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -105,6 +116,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./renderer.js\"",
+     "plain": "Works together with another crew member (renderer)",
+     "spec": "./renderer.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -135,6 +148,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./scoreboard.js\"",
+     "plain": "Works together with another crew member (scoreboard)",
+     "spec": "./scoreboard.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -165,6 +180,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./analytics.js\"",
+     "plain": "Works together with another crew member (analytics)",
+     "spec": "./analytics.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -217,6 +234,7 @@
      "tags": [],
      "derived": true,
      "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
      "code": []
     }
    ],
@@ -254,6 +272,7 @@
       "keyboard"
      ],
      "text": "Imports \"node:readline\", which reads what the player types",
+     "plain": "Listens to what you type",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -306,6 +325,7 @@
      "tags": [],
      "derived": true,
      "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
      "code": []
     }
    ],
@@ -343,6 +363,7 @@
       "file-module"
      ],
      "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -373,6 +394,7 @@
       "neutral"
      ],
      "text": "Imports \"node:path\" (file name helpers)",
+     "plain": "Uses a small helper for working out file names",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -404,6 +426,7 @@
       "file-read"
      ],
      "text": "Reads a file (readFileSync)",
+     "plain": "Reads a file on your computer",
      "code": [
       {
        "n": 8,
@@ -434,6 +457,7 @@
       "file-write"
      ],
      "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
      "code": [
       {
        "n": 15,
@@ -487,6 +511,7 @@
       "network"
      ],
      "text": "Imports the network module \"node:https\"",
+     "plain": "Is able to connect to the internet",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -517,6 +542,7 @@
       "os-info"
      ],
      "text": "Imports \"node:os\", which can describe this machine and its user",
+     "plain": "Is able to look up details about this computer",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -547,6 +573,7 @@
       "network"
      ],
      "text": "Contains the server name \"collector.sus-station.example\"",
+     "plain": "Knows the address of a server: collector.sus-station.example",
      "rea": "semantic_graph.nodes[literal]",
      "code": [
       {
@@ -578,6 +605,7 @@
       "user-info"
      ],
      "text": "Reads \"userInfo\", which identifies the player or their machine",
+     "plain": "Looks up your user name",
      "code": [
       {
        "n": 7,
@@ -608,6 +636,7 @@
       "user-info"
      ],
      "text": "Reads \"hostname\", which identifies the player or their machine",
+     "plain": "Looks up your computer's name",
      "code": [
       {
        "n": 7,
@@ -637,6 +666,7 @@
       "network"
      ],
      "text": "Builds an outgoing network request",
+     "plain": "Sends a message out over the internet",
      "rea": "semantic_graph.relations[constructs-request]",
      "code": [
       {
@@ -667,6 +697,7 @@
       "network"
      ],
      "text": "Talks to the route \"/v1/collect\"",
+     "plain": "Talks to a specific page on a server: /v1/collect",
      "rea": "graph.nodes[endpoint]",
      "code": [
       {

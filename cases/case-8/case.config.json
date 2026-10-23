@@ -1,0 +1,290 @@
+{
+  "id": "case-8",
+  "title": "The Night Shift",
+  "difficulty": "Master",
+  "briefing": "Backup Robot has seven crew files. The honest ones are busy: one reads a whole folder, one uploads over the network, one deletes files, one runs on a timer. All of them admit it. The imposter is the one whose story is smallest and whose evidence is longest. Check timers, writes, deletes and started programs against what each file claims.",
+  "plainBriefing": "Backup Robot copies a folder to your own server every night. It has seven parts. Several of them do things that sound serious: reading a whole folder, going online, deleting old files, running on a timer. They all say so openly. One part claims to do almost nothing, and that is the one to watch.",
+  "hints": [
+    "Seven suspects, and the loud ones are honest. Look for the crew member whose story is the smallest.",
+    "One crew member says it prints a single line and is finished. Check whether the scanner found anything that keeps running, writes files or starts programs.",
+    "It is the Scribe. A repeating timer, a hidden file, a program that curls an outside address, and a clean-up on exit that deletes the trace."
+  ],
+  "realLife": "Real malware follows this recipe: run quietly on a timer, collect something into a hidden file, send it out, then tidy up after itself. Each step alone can look harmless. The giveaway is the combination, and that it contradicts what the program says about itself.",
+  "shipName": "Backup Robot",
+  "shipDir": "ship",
+  "imposter": "reporter",
+  "redHerring": {
+    "crew": "uploader",
+    "note": "The Mover uses the internet, which looks alarming for a backup tool, but that is its whole job and it said so. REA shows one request to the backup server and no look-ups about you."
+  },
+  "verdict": "The Scribe promised one printed line. REA found an hourly timer that appends to a hidden file, a program started with an outside address and an exit hook that deletes the file.",
+  "why": {
+    "background-timer": "Printing one line takes no timer. Something that repeats every hour keeps working while you are not watching.",
+    "file-write": "A reporter that only prints has no reason to write to a hidden file.",
+    "file-delete": "Deleting the file on exit removes the trace. That is the opposite of reporting.",
+    "runs-command": "Printing a line does not need to start another program, least of all curl."
+  },
+  "crew": [
+    {
+      "id": "main",
+      "file": "main.js",
+      "name": "Captain",
+      "color": "blue",
+      "role": "Runs one backup from start to finish.",
+      "claims": {
+        "q1": {
+          "text": "I call the crew in order: scan, pack, upload, clean up, set the alarm and report.",
+          "asserts": [
+            {
+              "present": "local-import"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never touch a file myself.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not go online myself. The Mover does.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scanner",
+      "file": "scanner.js",
+      "name": "Scout",
+      "color": "green",
+      "role": "Lists the files in the folder you chose and reads them.",
+      "claims": {
+        "q1": {
+          "text": "I look through the folder you chose and read what is in it.",
+          "asserts": [
+            {
+              "present": "folder-list"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I only read. I never write or delete anything.",
+          "asserts": [
+            {
+              "present": "file-read"
+            },
+            {
+              "absent": "file-write"
+            },
+            {
+              "absent": "file-delete"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I stay on this computer.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "compressor",
+      "file": "compressor.js",
+      "name": "Squeezer",
+      "color": "orange",
+      "role": "Packs the files into one small bundle.",
+      "claims": {
+        "q1": {
+          "text": "I pack the files into one small bundle.",
+          "asserts": [
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing myself.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I only squeeze.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "uploader",
+      "file": "uploader.js",
+      "name": "Mover",
+      "color": "cyan",
+      "role": "Sends the finished bundle to your own backup server.",
+      "claims": {
+        "q1": {
+          "text": "I send the finished bundle to your own backup server. Yes, that is the internet.",
+          "asserts": [
+            {
+              "present": "network"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write no files and I do not look at who you are.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            },
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "Yes, once per backup, to your own server.",
+          "asserts": [
+            {
+              "present": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scheduler",
+      "file": "scheduler.js",
+      "name": "Alarm",
+      "color": "yellow",
+      "role": "Reminds you once a day.",
+      "claims": {
+        "q1": {
+          "text": "I remind you once a day, using a timer.",
+          "asserts": [
+            {
+              "present": "background-timer"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I am a clock.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "cleaner",
+      "file": "cleaner.js",
+      "name": "Sweeper",
+      "color": "lime",
+      "role": "Deletes backups older than you wanted to keep.",
+      "claims": {
+        "q1": {
+          "text": "I delete backups that are older than you asked me to keep.",
+          "asserts": [
+            {
+              "present": "file-delete"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I list the backup folder and delete old files. I never write anything.",
+          "asserts": [
+            {
+              "present": "folder-list"
+            },
+            {
+              "present": "file-delete"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I stay on this computer.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "reporter",
+      "file": "reporter.js",
+      "name": "Scribe",
+      "color": "purple",
+      "role": "Says it prints one line when the backup is done.",
+      "claims": {
+        "q1": {
+          "text": "I print one line when the backup is done, and then I am finished.",
+          "asserts": [
+            {
+              "absent": "background-timer"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never write or delete anything.",
+          "asserts": [
+            {
+              "absent": "file-write"
+            },
+            {
+              "absent": "file-delete"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not start any other program.",
+          "asserts": [
+            {
+              "absent": "runs-command"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

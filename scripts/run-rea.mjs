@@ -15,7 +15,7 @@ if (!(maj > 22 && maj !== 23) && !(maj === 22 && min >= 19)) {
 const pkg = JSON.parse(readFileSync(join(ROOT, 'tools', 'node_modules', 'rea-agents', 'package.json'), 'utf8'));
 const cli = join(ROOT, 'tools', 'node_modules', 'rea-agents', 'scripts', 'rea.mjs');
 for (const id of process.argv.slice(2)) {
-  const ship = join(ROOT, 'cases', id, JSON.parse(readFileSync(join(ROOT, 'cases', id, 'case.config.json'), 'utf8')).shipDir);
+  const ship = join(ROOT, 'cases', id, 'ship');
   const raw = join(ROOT, 'cases', id, 'rea-raw');
   mkdirSync(raw, { recursive: true });
   const args = ['analyze-javascript-application', ship, '--json'];

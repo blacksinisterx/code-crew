@@ -4,6 +4,13 @@
  "title": "The Diary Nobody Asked For",
  "difficulty": "Chief Inspector",
  "briefing": "Weather Desk prints a one-line forecast. This time the scariest-looking crew member is innocent, and the imposter looks like the quietest one. One of them talks to the internet and says so out loud. Another says it only prints notes. Do not accuse the loudest. Compare what each one claims with what REA found.",
+ "plainBriefing": "Weather Desk shows a one-line forecast. This time the scariest-looking crew member is innocent. One of them talks to the internet on purpose and says so honestly. The liar is a quiet one that says it only writes notes on the screen. Do not accuse the loudest.",
+ "hints": [
+  "Being scary is not the same as lying. A part that connects to the internet and admits it is telling the truth.",
+  "Look for the crew member that says it only prints on the screen, then see whether the scanner found it writing into a file or reading private settings.",
+  "It is Diary. It writes a hidden file in your personal folder and reads your private settings. Show both clues."
+ ],
+ "realLife": "A log file that quietly collects your user name and private settings is a classic leak. The question to ask of any app is not \"does it use the internet?\" but \"does what it does match what it says?\"",
  "shipName": "Weather Desk",
  "rea": {
   "tool": "rea-agents",
@@ -45,6 +52,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./config.js\"",
+     "plain": "Works together with another crew member (config)",
+     "spec": "./config.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -75,6 +84,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./weather.js\"",
+     "plain": "Works together with another crew member (weather)",
+     "spec": "./weather.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -105,6 +116,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./cache.js\"",
+     "plain": "Works together with another crew member (cache)",
+     "spec": "./cache.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -135,6 +148,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./report.js\"",
+     "plain": "Works together with another crew member (report)",
+     "spec": "./report.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -165,6 +180,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./logger.js\"",
+     "plain": "Works together with another crew member (logger)",
+     "spec": "./logger.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -219,6 +236,7 @@
       "file-module"
      ],
      "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -250,6 +268,7 @@
       "file-read"
      ],
      "text": "Reads a file (readFileSync)",
+     "plain": "Reads a file on your computer",
      "code": [
       {
        "n": 6,
@@ -267,6 +286,37 @@
        "hit": false
       }
      ]
+    },
+    {
+     "id": "config:reads-env:11:17",
+     "file": "config.js",
+     "key": "WEATHER_CITY",
+     "line": 11,
+     "col": 17,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-env",
+     "tags": [
+      "env"
+     ],
+     "text": "Reads the environment variable \"WEATHER_CITY\"",
+     "plain": "Reads a private setting stored on your computer called \"WEATHER_CITY\"",
+     "code": [
+      {
+       "n": 10,
+       "text": "  }",
+       "hit": false
+      },
+      {
+       "n": 11,
+       "text": "  return { city: process.env.WEATHER_CITY ?? file.city ?? 'Lahore' };",
+       "hit": true
+      },
+      {
+       "n": 12,
+       "text": "}",
+       "hit": false
+      }
+     ]
     }
    ],
    "claims": {
@@ -275,7 +325,7 @@
      "contradictedBy": []
     },
     "q2": {
-     "text": "I read one settings file. I never write anything.",
+     "text": "I read one settings file and one private setting that holds the city name. I never write anything.",
      "contradictedBy": []
     },
     "q3": {
@@ -303,6 +353,7 @@
       "network"
      ],
      "text": "Imports the network module \"node:https\"",
+     "plain": "Is able to connect to the internet",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -333,6 +384,7 @@
       "network"
      ],
      "text": "Contains the server name \"api.weather-desk.example\"",
+     "plain": "Knows the address of a server: api.weather-desk.example",
      "rea": "semantic_graph.nodes[literal]",
      "code": [
       {
@@ -363,6 +415,7 @@
       "network"
      ],
      "text": "Builds an outgoing network request",
+     "plain": "Sends a message out over the internet",
      "rea": "semantic_graph.relations[constructs-request]",
      "code": [
       {
@@ -417,6 +470,7 @@
       "file-module"
      ],
      "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -447,6 +501,7 @@
       "os-info"
      ],
      "text": "Imports \"node:os\", which can describe this machine and its user",
+     "plain": "Is able to look up details about this computer",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -477,6 +532,7 @@
       "neutral"
      ],
      "text": "Imports \"node:path\" (file name helpers)",
+     "plain": "Uses a small helper for working out file names",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -508,6 +564,7 @@
       "file-write"
      ],
      "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
      "code": [
       {
        "n": 8,
@@ -559,6 +616,7 @@
      "tags": [],
      "derived": true,
      "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
      "code": []
     }
    ],
@@ -596,6 +654,7 @@
       "file-module"
      ],
      "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -626,6 +685,7 @@
       "os-info"
      ],
      "text": "Imports \"node:os\", which can describe this machine and its user",
+     "plain": "Is able to look up details about this computer",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -656,6 +716,7 @@
       "neutral"
      ],
      "text": "Imports \"node:path\" (file name helpers)",
+     "plain": "Uses a small helper for working out file names",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -687,6 +748,7 @@
       "user-info"
      ],
      "text": "Reads \"homedir\", which identifies the player or their machine",
+     "plain": "Looks up where your personal files live",
      "code": [
       {
        "n": 5,
@@ -717,6 +779,7 @@
       "file-write"
      ],
      "text": "Writes a file (appendFileSync)",
+     "plain": "Writes to a file on your computer",
      "code": [
       {
        "n": 9,
@@ -747,6 +810,7 @@
       "env"
      ],
      "text": "Reads process.env, the environment variables (where secrets such as API keys often live)",
+     "plain": "Reads the private settings stored on your computer",
      "code": [
       {
        "n": 9,
@@ -777,6 +841,7 @@
       "user-info"
      ],
      "text": "Reads \"userInfo\", which identifies the player or their machine",
+     "plain": "Looks up your user name",
      "code": [
       {
        "n": 9,

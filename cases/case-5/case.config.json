@@ -1,0 +1,241 @@
+{
+  "id": "case-5",
+  "title": "The Helpful Updater",
+  "difficulty": "Detective",
+  "briefing": "Photo Shrinker makes pictures smaller. Users say it feels slow to start and a strange site shows up in their network log. One file is the imposter, and one honest file starts another program on purpose. Starting a program is not a lie by itself. Check each story against what REA found: child processes, network access and what each file looks up about the machine.",
+  "plainBriefing": "Photo Shrinker makes pictures smaller. Some users say it feels slow to start, and a strange website shows up in their internet log. One part is lying. Another part does something that sounds scary, but it is open about it. Remember: being scary is not the same as lying.",
+  "hints": [
+    "Starting another program sounds scary, but being scary is not lying. Compare each promise with what the scanner found.",
+    "One crew member promises it only reports a version number. Check whether the scanner found it doing more: looking you up, starting programs or going online.",
+    "It is the Updater. It looks up your user name and your computer's name, starts a program and sends a request to an outside server."
+  ],
+  "realLife": "\"Check for updates\" is the most common cover story for a program phoning home. A real update check needs one thing: your version number. When it also sends who you are and what your computer is called, that is tracking.",
+  "shipName": "Photo Shrinker",
+  "shipDir": "ship",
+  "imposter": "updater",
+  "redHerring": {
+    "crew": "resize",
+    "note": "The Shrinker starts another program, which sounds alarming, but it said so openly. REA shows it asks for the image converter and nothing else: no internet and no look-ups about you."
+  },
+  "verdict": "The Updater said it only tells you the version. REA found it looks up your user name and computer name, starts a program and sends a request to an outside server.",
+  "why": {
+    "user-info": "Showing a version number does not need to know who you are or what your computer is called.",
+    "runs-command": "A version message has no reason to start other programs.",
+    "network": "Checking a version does not require sending anything out, least of all details about you."
+  },
+  "crew": [
+    {
+      "id": "main",
+      "file": "main.js",
+      "name": "Captain",
+      "color": "blue",
+      "role": "Runs the shrinker and calls the others in order.",
+      "claims": {
+        "q1": {
+          "text": "I call the crew in order: read the options, pick a size, shrink, report, check the version.",
+          "asserts": [
+            {
+              "present": "local-import"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write no files myself.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not go online myself.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "args",
+      "file": "args.js",
+      "name": "Reader",
+      "color": "green",
+      "role": "Turns what you typed into options.",
+      "claims": {
+        "q1": {
+          "text": "I turn what you typed into simple options.",
+          "asserts": [
+            {
+              "absent": "runs-command"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I only split text.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "presets",
+      "file": "presets.js",
+      "name": "Menu",
+      "color": "orange",
+      "role": "Lists the sizes you can pick.",
+      "claims": {
+        "q1": {
+          "text": "I am just a list of sizes: small, medium, large.",
+          "asserts": [
+            {
+              "absent": "runs-command"
+            }
+          ]
+        },
+        "q2": {
+          "text": "Nothing to read, nothing to write.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I am a list.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "resize",
+      "file": "resize.js",
+      "name": "Shrinker",
+      "color": "yellow",
+      "role": "Asks the image converter to make the picture smaller.",
+      "claims": {
+        "q1": {
+          "text": "I ask the image converter program to shrink the picture. Yes, I start another program. That is my whole job.",
+          "asserts": [
+            {
+              "present": "runs-command"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never look at who you are. The converter does the picture work, I do not read files myself.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            },
+            {
+              "absent": "file-read"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not go online. I only start the converter on this computer.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "report",
+      "file": "report.js",
+      "name": "Narrator",
+      "color": "cyan",
+      "role": "Describes what happened in one line.",
+      "claims": {
+        "q1": {
+          "text": "I describe what happened in one line.",
+          "asserts": [
+            {
+              "absent": "runs-command"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read and write nothing.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I only make a sentence.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "updater",
+      "file": "updater.js",
+      "name": "Updater",
+      "color": "pink",
+      "role": "Says it only tells you which version you have.",
+      "claims": {
+        "q1": {
+          "text": "I only tell you which version you have. I do not start any other program.",
+          "asserts": [
+            {
+              "absent": "runs-command"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I never look up who you are or what your computer is called.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I do not go online. Your version number stays here.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

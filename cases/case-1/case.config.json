@@ -3,6 +3,13 @@
   "title": "The Telemetry Leak",
   "difficulty": "Rookie",
   "briefing": "The Mini Station is a tiny score-keeping game, and its crew are its six code files. Players say their high scores are showing up where they should not. One of the crew is an imposter. Read the evidence REA found in the code, question the crew, catch the one whose story does not match, then call the vote.",
+  "plainBriefing": "Mini Station is a small number game. Players noticed that their details are ending up somewhere they should not. The app is made of six small parts, and in this game each part is a crew member. One of them is lying about what it really does. Talk to them, look at what the scanner found, and catch the liar.",
+  "hints": [
+    "Not everyone is honest. Compare what each crew member SAYS with what the scanner FOUND. Start with the ones whose story is a promise (\"never\", \"nothing\", \"only\").",
+    "Look for the crew member who says it only counts or stores things inside the game, then check whether the scanner found it reaching outside or looking up who you are.",
+    "It is Telemetry. Ask it the first and third question, then show the clue about your details and the clue about the internet."
+  ],
+  "realLife": "Plenty of real apps count how you use them. That is fine until they also send who you are. Checking what a program connects to and what it looks up about you is exactly how security people spot it.",
   "shipName": "Mini Station",
   "shipDir": "ship",
   "imposter": "analytics",
@@ -13,57 +20,219 @@
   },
   "crew": [
     {
-      "id": "main", "file": "main.js", "name": "Captain", "color": "blue",
+      "id": "main",
+      "file": "main.js",
+      "name": "Captain",
+      "color": "blue",
       "role": "Starts the game and calls the rest of the crew.",
       "claims": {
-        "q1": { "text": "I run the ship. I start the game, then call the rest of the crew.", "asserts": [{ "present": "local-import" }] },
-        "q2": { "text": "I do not read or write anything myself. I only give orders.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
-        "q3": { "text": "I never leave the ship.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I run the ship. I start the game, then call the rest of the crew.",
+          "asserts": [
+            {
+              "present": "local-import"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I do not read or write anything myself. I only give orders.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "I never leave the ship.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "engine", "file": "engine.js", "name": "Engineer", "color": "orange",
+      "id": "engine",
+      "file": "engine.js",
+      "name": "Engineer",
+      "color": "orange",
       "role": "Knows the rules: moves, merges and when the game is over.",
       "claims": {
-        "q1": { "text": "I am just the rules. I call nobody.", "asserts": [{ "absent": "local-import" }, { "absent": "network" }] },
-        "q2": { "text": "No files for me. I only think.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
-        "q3": { "text": "Network? I would not even know how to open one.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I am just the rules. I call nobody.",
+          "asserts": [
+            {
+              "absent": "local-import"
+            },
+            {
+              "absent": "network"
+            }
+          ]
+        },
+        "q2": {
+          "text": "No files for me. I only think.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "Network? I would not even know how to open one.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "input", "file": "input.js", "name": "Comms", "color": "green",
+      "id": "input",
+      "file": "input.js",
+      "name": "Comms",
+      "color": "green",
       "role": "Listens to the keyboard and passes the keys on.",
       "claims": {
-        "q1": { "text": "I listen to the keyboard and pass the keys on.", "asserts": [{ "present": "keyboard" }] },
-        "q2": { "text": "I read keys. I write nothing.", "asserts": [{ "absent": "file-write" }] },
-        "q3": { "text": "No. I stay inside the ship.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I listen to the keyboard and pass the keys on.",
+          "asserts": [
+            {
+              "present": "keyboard"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I read keys. I write nothing.",
+          "asserts": [
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. I stay inside the ship.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "renderer", "file": "renderer.js", "name": "Medic", "color": "cyan",
+      "id": "renderer",
+      "file": "renderer.js",
+      "name": "Medic",
+      "color": "cyan",
       "role": "Draws the board and the score on the screen.",
       "claims": {
-        "q1": { "text": "I draw the board on screen. That is all I do.", "asserts": [{ "absent": "user-info" }] },
-        "q2": { "text": "I only write to the screen.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
-        "q3": { "text": "Never. I do not leave the ship.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I draw the board on screen. That is all I do.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I only write to the screen.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "Never. I do not leave the ship.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "scoreboard", "file": "scoreboard.js", "name": "Quartermaster", "color": "yellow",
+      "id": "scoreboard",
+      "file": "scoreboard.js",
+      "name": "Quartermaster",
+      "color": "yellow",
       "role": "Keeps the high score in a file on this machine.",
       "claims": {
-        "q1": { "text": "I keep the high score safe.", "asserts": [{ "present": "file-write" }] },
-        "q2": { "text": "One local file. I read it, and I rewrite it when you beat your best.", "asserts": [{ "present": "file-read" }, { "present": "file-write" }] },
-        "q3": { "text": "No. Your score stays on this machine.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I keep the high score safe.",
+          "asserts": [
+            {
+              "present": "file-write"
+            }
+          ]
+        },
+        "q2": {
+          "text": "One local file. I read it, and I rewrite it when you beat your best.",
+          "asserts": [
+            {
+              "present": "file-read"
+            },
+            {
+              "present": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "No. Your score stays on this machine.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     },
     {
-      "id": "analytics", "file": "analytics.js", "name": "Telemetry", "color": "pink",
+      "id": "analytics",
+      "file": "analytics.js",
+      "name": "Telemetry",
+      "color": "pink",
       "role": "Says it counts how often the game is played.",
       "claims": {
-        "q1": { "text": "I just count how often the game is played. Nothing about you, I promise.", "asserts": [{ "absent": "user-info" }] },
-        "q2": { "text": "I do not touch any files.", "asserts": [{ "absent": "file-read" }, { "absent": "file-write" }] },
-        "q3": { "text": "Never leave the ship. I only count, I do not send anything.", "asserts": [{ "absent": "network" }] }
+        "q1": {
+          "text": "I just count how often the game is played. Nothing about you, I promise.",
+          "asserts": [
+            {
+              "absent": "user-info"
+            }
+          ]
+        },
+        "q2": {
+          "text": "I do not touch any files.",
+          "asserts": [
+            {
+              "absent": "file-read"
+            },
+            {
+              "absent": "file-write"
+            }
+          ]
+        },
+        "q3": {
+          "text": "Never leave the ship. I only count, I do not send anything.",
+          "asserts": [
+            {
+              "absent": "network"
+            }
+          ]
+        }
       }
     }
   ]

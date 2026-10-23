@@ -1,0 +1,7 @@
+{
+  "name": "photo-shrinker",
+  "version": "1.4.0",
+  "description": "Makes pictures smaller. The ship in Code Crew case 5.",
+  "type": "module",
+  "main": "main.js"
+}

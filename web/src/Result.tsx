@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { CrewBot } from './CrewBot.tsx';
+import { Clue } from './Clue.tsx';
 import { contradictionsFound, rating, score } from './game.ts';
 import type { GameState } from './game.ts';
+import type { Mode } from './types.ts';
 
-export function Result({ game, nextId, onAgain, onNext, onExit }: { game: GameState; nextId: string | null; onAgain: () => void; onNext: () => void; onExit: () => void }) {
+export function Result({ game, mode, nextId, onAgain, onNext, onExit }: { game: GameState; mode: Mode; nextId: string | null; onAgain: () => void; onNext: () => void; onExit: () => void }) {
   const { data } = game;
+  const detective = mode === 'detective';
+  const words = (t: string) => (detective ? t.replace(/\bREA\b/g, 'the scanner') : t);
   const win = game.outcome === 'win';
   const imp = data.crew.find((m) => m.id === data.imposter)!;
   const pts = win ? score(game) : 0;
@@ -12,7 +16,7 @@ export function Result({ game, nextId, onAgain, onNext, onExit }: { game: GameSt
   const found = Object.entries(game.caught[imp.id] ?? {});
   const trail = Object.entries(imp.claims).filter(([, c]) => c.contradictedBy.length);
   const tags = new Set(imp.evidence.filter((e) => trail.some(([, c]) => c.contradictedBy.includes(e.id))).flatMap((e) => e.tags));
-  const share = `I ${win ? 'solved' : 'failed'} "${data.title}" in Code Crew${win ? `: ${pts}/100 (${rating(pts)})` : ''}. Every clue is a real finding from the REA reverse-engineering tool. ${location.origin}`;
+  const share = `I ${win ? 'solved' : 'failed'} "${data.title}" in Code Crew${win ? `: ${pts}/100 (${rating(pts)})` : ''}. Every clue is a real finding from REA, a code-scanning tool. ${location.origin}`;
   const copy = async () => {
     try { await navigator.clipboard.writeText(share); setCopied(true); } catch { setCopied(false); }
   };
@@ -26,10 +30,10 @@ export function Result({ game, nextId, onAgain, onNext, onExit }: { game: GameSt
 
         <div className="reveal">
           <CrewBot color={imp.color} state="caught" title={imp.name} />
-          <div><h2>{imp.name} ({imp.file}) was the imposter.</h2><p>{data.verdict}</p></div>
+          <div><h2>{imp.name}{!detective && ` (${imp.file})`} was the imposter.</h2><p>{words(data.verdict)}</p></div>
         </div>
 
-        <h3 className="sec" style={{ marginTop: 6 }}>The evidence trail</h3>
+        <h3 className="sec" style={{ marginTop: 6 }}>{detective ? 'How the liar was caught' : 'The evidence trail'}</h3>
         <div className="trail">
           {trail.map(([q, claim]) => {
             const clues = imp.evidence.filter((e) => claim.contradictedBy.includes(e.id));
@@ -38,21 +42,16 @@ export function Result({ game, nextId, onAgain, onNext, onExit }: { game: GameSt
                 <div className="mono" style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>{data.questions.find((x) => x.id === q)?.text}</div>
                 <div className="said">&ldquo;{claim.text}&rdquo; {found.some(([k]) => k === q) ? '(you caught this)' : '(you did not catch this one)'}</div>
                 <div className="cards" style={{ marginTop: 8 }}>
-                  {clues.map((e) => (
-                    <div key={e.id} className="card">
-                      <div className="top"><span className="chip none">REA found</span><span className="loc mono">{e.file}:{e.line}:{e.col}</span></div>
-                      <p>{e.text}</p>
-                      <div className="code">{e.code.map((c) => <div key={c.n} className={c.hit ? 'hit' : ''}><span className="n">{c.n}</span><span>{c.text}</span></div>)}</div>
-                    </div>
-                  ))}
+                  {clues.map((e) => <Clue key={e.id} e={e} mode={mode} />)}
                 </div>
               </div>
             );
           })}
         </div>
         <ul className="why" style={{ margin: 0, paddingLeft: 20 }}>{[...tags].filter((t) => data.why[t]).map((t) => <li key={t}>{data.why[t]}</li>)}</ul>
-        {data.redHerring && <p className="why"><b>The red herring:</b> {data.redHerring.note}</p>}
-        {win && <p className="scoreline" style={{ marginTop: 12 }}>{contradictionsFound(game)} of {trail.length} lies caught with a clue, {game.asks} questions asked, {game.wrongClues} wrong clues, {game.wrongVotes} wrong votes.</p>}
+        {data.redHerring && <p className="why"><b>The red herring:</b> {words(data.redHerring.note)}</p>}
+        <div className="panel reallife"><h3>In real life</h3><p>{data.realLife}</p></div>
+        {win && <p className="scoreline" style={{ marginTop: 12 }}>{contradictionsFound(game)} of {trail.length} lies caught with a clue, {game.asks} questions asked, {game.wrongClues} wrong clues, {game.hints} hints, {game.wrongVotes} wrong votes.</p>}
 
         <div className="row2">
           {win && nextId && <button className="btn" onClick={onNext}>Next case</button>}

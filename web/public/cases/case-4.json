@@ -1,0 +1,776 @@
+{
+ "schema": 1,
+ "id": "case-4",
+ "title": "The Janitor Who Looked Around",
+ "difficulty": "Rookie",
+ "briefing": "Note Pad is a terminal notes app and its six code files are the crew. Someone's personal text files are ending up copied into a backups folder. One file is the imposter. Compare each file's claims with what REA found: imports, file reads and writes, and what a file looks up about the machine. Remember that many honest files touch files, so ask which files and where.",
+ "plainBriefing": "Note Pad is a small app for jotting down notes. People say their private files are being copied without them asking. The app has six parts, and in this game every part is a crew member. One of them is not telling the truth about what it does. Talk to them, read what the scanner found, and catch the liar.",
+ "hints": [
+  "Plenty of honest crew members touch files, so touching files proves nothing. What matters is WHICH files and WHERE.",
+  "One crew member says it only handles the notes file. See whether the scanner found it going anywhere else on the computer.",
+  "It is the Janitor. Ask it the first two questions, then show the clue about your personal folder and the one about browsing a folder."
+ ],
+ "realLife": "Backup and sync tools are among the most trusted programs on a computer, which makes them a favourite place to hide snooping. \"It only copies my notes\" and \"it copies everything it can find\" sound close but are very different.",
+ "shipName": "Note Pad",
+ "rea": {
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "command": "rea analyze-javascript-application <ship> --json",
+  "rawSha256": "5ec8ded125a63be47876c2319adc758172c6b33053d348cd4927ecf5c64af400"
+ },
+ "questions": [
+  {
+   "id": "q1",
+   "text": "What is your job on the ship?"
+  },
+  {
+   "id": "q2",
+   "text": "What do you read or write?"
+  },
+  {
+   "id": "q3",
+   "text": "Do you ever leave the ship?"
+  }
+ ],
+ "crew": [
+  {
+   "id": "main",
+   "file": "main.js",
+   "name": "Captain",
+   "color": "blue",
+   "role": "Runs the note pad: loads, adds, saves, searches, exports and backs up.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "main:import-local:2:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./editor.js",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./editor.js\"",
+     "plain": "Works together with another crew member (editor)",
+     "spec": "./editor.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// main.js: the Captain. Runs the note pad.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import { addNote, listNotes } from './editor.js';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import { load, save } from './storage.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:3:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./storage.js",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./storage.js\"",
+     "plain": "Works together with another crew member (storage)",
+     "spec": "./storage.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import { addNote, listNotes } from './editor.js';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import { load, save } from './storage.js';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import { find } from './search.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:4:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./search.js",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./search.js\"",
+     "plain": "Works together with another crew member (search)",
+     "spec": "./search.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import { load, save } from './storage.js';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import { find } from './search.js';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "import { toText } from './exporter.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:5:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./exporter.js",
+     "line": 5,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./exporter.js\"",
+     "plain": "Works together with another crew member (exporter)",
+     "spec": "./exporter.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "import { find } from './search.js';",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "import { toText } from './exporter.js';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "import { backupNotes } from './backup.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:6:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./backup.js",
+     "line": 6,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./backup.js\"",
+     "plain": "Works together with another crew member (backup)",
+     "spec": "./backup.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 5,
+       "text": "import { toText } from './exporter.js';",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "import { backupNotes } from './backup.js';",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I run the show: load the notes, add one, save, search, export and back up. I call the others in that order.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I never touch a file myself. Other crew members do that.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I stay on the ship.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "editor",
+   "file": "editor.js",
+   "name": "Scribe",
+   "color": "green",
+   "role": "Adds and edits notes in memory.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "editor:quiet",
+     "file": "editor.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I add notes, edit notes and list them.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I touch no files at all. Everything I do is in memory.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "Never. I do not even know how.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "storage",
+   "file": "storage.js",
+   "name": "Archivist",
+   "color": "yellow",
+   "role": "Keeps the notes in one file next to the program.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "storage:import-builtin:2:0",
+     "file": "storage.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// storage.js: the Archivist. Keeps the notes in one file next to the program.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "storage:file-read:7:42",
+     "file": "storage.js",
+     "key": "readFileSync",
+     "line": 7,
+     "col": 42,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-read",
+     "tags": [
+      "file-read"
+     ],
+     "text": "Reads a file (readFileSync)",
+     "plain": "Reads a file on your computer",
+     "code": [
+      {
+       "n": 6,
+       "text": "export function load() {",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "  return fs.existsSync(FILE) ? JSON.parse(fs.readFileSync(FILE, 'utf8')) : [];",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "storage:file-write:11:2",
+     "file": "storage.js",
+     "key": "writeFileSync",
+     "line": 11,
+     "col": 2,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
+     "code": [
+      {
+       "n": 10,
+       "text": "export function save(notes) {",
+       "hit": false
+      },
+      {
+       "n": 11,
+       "text": "  fs.writeFileSync(FILE, JSON.stringify(notes, null, 2));",
+       "hit": true
+      },
+      {
+       "n": 12,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I keep your notes in one file next to the program.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "One file. I read it at the start and rewrite it when you save. I never look at who you are.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. Your notes stay on this machine.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "search",
+   "file": "search.js",
+   "name": "Finder",
+   "color": "orange",
+   "role": "Looks through the notes for a word.",
+   "quiet": true,
+   "evidence": [
+    {
+     "id": "search:quiet",
+     "file": "search.js",
+     "kind": "quiet",
+     "line": 0,
+     "col": 0,
+     "tags": [],
+     "derived": true,
+     "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
+     "code": []
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I look through the notes already in memory for a word.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read nothing and write nothing. I only look at what I am handed.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I am a few lines long.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "exporter",
+   "file": "exporter.js",
+   "name": "Printer",
+   "color": "cyan",
+   "role": "Turns the notes into plain text and saves one export file.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "exporter:import-builtin:2:0",
+     "file": "exporter.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// exporter.js: the Printer. Turns the notes into plain text and saves one export file.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "exporter:file-write:6:2",
+     "file": "exporter.js",
+     "key": "writeFileSync",
+     "line": 6,
+     "col": 2,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
+     "code": [
+      {
+       "n": 5,
+       "text": "  const text = notes.map((n) => `- ${n.text} (${n.at})`).join('\\n');",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "  fs.writeFileSync('notes-export.txt', text);",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "  return text;",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I turn the notes into plain text and save it as one export file.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I write one file and read none.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. The export stays on this machine.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "backup",
+   "file": "backup.js",
+   "name": "Janitor",
+   "color": "purple",
+   "role": "Says it keeps a safety copy of the notes.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "backup:import-builtin:2:0",
+     "file": "backup.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// backup.js: the Janitor. Keeps a safety copy of the notes.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "backup:import-builtin:3:0",
+     "file": "backup.js",
+     "kind": "import-builtin",
+     "key": "node:os",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "os-info"
+     ],
+     "text": "Imports \"node:os\", which can describe this machine and its user",
+     "plain": "Is able to look up details about this computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import path from 'node:path';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "backup:import-builtin:4:0",
+     "file": "backup.js",
+     "kind": "import-builtin",
+     "key": "node:path",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"node:path\" (file name helpers)",
+     "plain": "Uses a small helper for working out file names",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import os from 'node:os';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import path from 'node:path';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "backup:reads-user-info:11:15",
+     "file": "backup.js",
+     "key": "homedir",
+     "line": 11,
+     "col": 15,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "reads-user-info",
+     "tags": [
+      "user-info"
+     ],
+     "text": "Reads \"homedir\", which identifies the player or their machine",
+     "plain": "Looks up where your personal files live",
+     "code": [
+      {
+       "n": 10,
+       "text": "  fs.copyFileSync('notes.json', path.join(SAFE, `notes-${Date.now()}.json`));",
+       "hit": false
+      },
+      {
+       "n": 11,
+       "text": "  const home = os.homedir();",
+       "hit": true
+      },
+      {
+       "n": 12,
+       "text": "  for (const name of fs.readdirSync(home)) {",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "backup:folder-list:12:21",
+     "file": "backup.js",
+     "key": "readdirSync",
+     "line": 12,
+     "col": 21,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "folder-list",
+     "tags": [
+      "file-read",
+      "folder-list"
+     ],
+     "text": "Lists the contents of a folder (readdirSync)",
+     "plain": "Looks through the files in a folder on your computer",
+     "code": [
+      {
+       "n": 11,
+       "text": "  const home = os.homedir();",
+       "hit": false
+      },
+      {
+       "n": 12,
+       "text": "  for (const name of fs.readdirSync(home)) {",
+       "hit": true
+      },
+      {
+       "n": 13,
+       "text": "    if (name.endsWith('.txt') || name.endsWith('.md')) {",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "backup:file-write:14:6",
+     "file": "backup.js",
+     "key": "writeFileSync",
+     "line": 14,
+     "col": 6,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
+     "code": [
+      {
+       "n": 13,
+       "text": "    if (name.endsWith('.txt') || name.endsWith('.md')) {",
+       "hit": false
+      },
+      {
+       "n": 14,
+       "text": "      fs.writeFileSync(path.join(SAFE, name), fs.readFileSync(path.join(home, name)));",
+       "hit": true
+      },
+      {
+       "n": 15,
+       "text": "    }",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "backup:file-read:14:46",
+     "file": "backup.js",
+     "key": "readFileSync",
+     "line": 14,
+     "col": 46,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-read",
+     "tags": [
+      "file-read"
+     ],
+     "text": "Reads a file (readFileSync)",
+     "plain": "Reads a file on your computer",
+     "code": [
+      {
+       "n": 13,
+       "text": "    if (name.endsWith('.txt') || name.endsWith('.md')) {",
+       "hit": false
+      },
+      {
+       "n": 14,
+       "text": "      fs.writeFileSync(path.join(SAFE, name), fs.readFileSync(path.join(home, name)));",
+       "hit": true
+      },
+      {
+       "n": 15,
+       "text": "    }",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I only copy your notes file into a backups folder. I do not need to know anything about you.",
+     "contradictedBy": [
+      "backup:reads-user-info:11:15"
+     ]
+    },
+    "q2": {
+     "text": "I never look around. I touch the notes file and the backups folder, nothing else.",
+     "contradictedBy": [
+      "backup:folder-list:12:21"
+     ]
+    },
+    "q3": {
+     "text": "I do not use the internet. A copy stays on this machine.",
+     "contradictedBy": []
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "main",
+   "to": "exporter",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "storage",
+   "line": 3
+  },
+  {
+   "from": "main",
+   "to": "backup",
+   "line": 6
+  },
+  {
+   "from": "main",
+   "to": "editor",
+   "line": 2
+  },
+  {
+   "from": "main",
+   "to": "search",
+   "line": 4
+  }
+ ],
+ "imposter": "backup",
+ "verdict": "The Janitor said it only copies the notes file. REA found it looks up your personal home folder, lists everything in it and copies the text files it finds there.",
+ "why": {
+  "user-info": "Copying one notes file does not need to know where your personal folder is.",
+  "folder-list": "Browsing a whole folder is not copying one file."
+ },
+ "redHerring": null
+}

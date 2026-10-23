@@ -1,0 +1,7 @@
+{
+  "name": "home-hub",
+  "version": "2.0.0",
+  "description": "A small smart home hub. The ship in Code Crew case 6.",
+  "type": "module",
+  "main": "main.js"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "note-pad",
+  "version": "1.0.0",
+  "description": "A tiny note pad for the terminal. The ship in Code Crew case 4.",
+  "type": "module",
+  "main": "main.js"
+}

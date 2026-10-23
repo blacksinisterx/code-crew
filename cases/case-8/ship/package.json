@@ -1,0 +1,7 @@
+{
+  "name": "backup-robot",
+  "version": "3.1.0",
+  "description": "A small nightly backup robot. The ship in Code Crew case 8.",
+  "type": "module",
+  "main": "main.js"
+}

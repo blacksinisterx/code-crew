@@ -1,26 +1,29 @@
 import { CrewBot, type BotState } from './CrewBot.tsx';
-import type { CaseData } from './types.ts';
+import type { CaseData, Mode } from './types.ts';
 
 const W = 640;
-const H = 440;
+const H_SMALL = 520;
+const H_CROWD = 540; // seven or more crew need more room so nobody overlaps
 
 // The busiest crew member (most imports) sits in the middle; everyone else around the ring.
-function layout(data: CaseData): Record<string, { x: number; y: number }> {
+function layout(data: CaseData, H: number, ry: number): Record<string, { x: number; y: number }> {
   const degree = (id: string) => data.edges.filter((e) => e.from === id || e.to === id).length;
   const centre = [...data.crew].sort((a, b) => degree(b.id) - degree(a.id))[0].id;
   const rest = data.crew.filter((m) => m.id !== centre);
   const pos: Record<string, { x: number; y: number }> = { [centre]: { x: W / 2, y: H / 2 + 22 } };
   rest.forEach((m, i) => {
     const a = ((-90 + (i * 360) / rest.length) * Math.PI) / 180;
-    pos[m.id] = { x: W / 2 + 238 * Math.cos(a), y: H / 2 + 22 + 128 * Math.sin(a) };
+    pos[m.id] = { x: W / 2 + 238 * Math.cos(a), y: H / 2 + 22 + ry * Math.sin(a) };
   });
   return pos;
 }
 
-export function Board({ data, selected, ejected, caught, onSelect }: { data: CaseData; selected: string | null; ejected: string[]; caught: Set<string>; onSelect: (id: string) => void }) {
-  const pos = layout(data);
+export function Board({ data, mode, selected, ejected, caught, onSelect }: { data: CaseData; mode: Mode; selected: string | null; ejected: string[]; caught: Set<string>; onSelect: (id: string) => void }) {
+  const crowd = data.crew.length > 6;
+  const H = crowd ? H_CROWD : H_SMALL;
+  const pos = layout(data, H, crowd ? 178 : 162);
   return (
-    <div className="board">
+    <div className={`board${crowd ? ' crowd' : ''}`}>
       <svg className="cables" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#8aa0e0" /></marker>
@@ -47,10 +50,10 @@ export function Board({ data, selected, ejected, caught, onSelect }: { data: Cas
         const state: BotState = out ? 'out' : caught.has(m.id) ? 'sweating' : selected === m.id ? 'selected' : 'idle';
         return (
           <button key={m.id} className={`seat${selected === m.id ? ' sel' : ''}${out ? ' out' : ''}`} style={{ left: `${(p.x / W) * 100}%`, top: `${(p.y / H) * 100}%` }}
-            onClick={() => onSelect(m.id)} disabled={out} aria-pressed={selected === m.id} aria-label={`${m.name}, ${m.file}${out ? ', voted out' : ''}`}>
+            onClick={() => onSelect(m.id)} disabled={out} aria-pressed={selected === m.id} aria-label={`${m.name}${mode === 'code' ? `, ${m.file}` : ''}${out ? ', voted out' : ''}`}>
             <CrewBot color={m.color} state={state} title={m.name} />
             <span className="nm">{m.name}</span>
-            <span className="fl">{m.file}</span>
+            {mode === 'code' && <span className="fl">{m.file}</span>}
           </button>
         );
       })}

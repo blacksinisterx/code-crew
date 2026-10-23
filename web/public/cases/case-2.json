@@ -4,6 +4,13 @@
  "title": "The Quiet Courier",
  "difficulty": "Detective",
  "briefing": "Task Tracker is a to-do list for the terminal. People say their task titles are turning up on a server they never heard of. This time the imposter is careful: nothing in the code says \"send\" in plain words. Look for what is hidden, and for what REA could not read.",
+ "plainBriefing": "Task Tracker is a simple to-do list. Some people say their task titles are showing up on a server they have never heard of. This time the liar is careful: nothing in its code says \"send\" out loud. Watch for things that are hidden or disguised.",
+ "hints": [
+  "A careful liar hides things instead of doing them openly. Look for clues marked Hidden, not only for the internet.",
+  "One crew member says its code is plain with nothing hidden. Check whether the scanner found anything disguised or loaded in secret.",
+  "It is Courier. Show the Hidden clue first, then the one about the internet."
+ ],
+ "realLife": "Real malicious code often hides: a server address scrambled into random-looking text, or a helper loaded under a name that is only worked out later. Scanners flag exactly those tricks.",
  "shipName": "Task Tracker",
  "rea": {
   "tool": "rea-agents",
@@ -45,6 +52,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./cli.js\"",
+     "plain": "Works together with another crew member (cli)",
+     "spec": "./cli.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -75,6 +84,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./tasks.js\"",
+     "plain": "Works together with another crew member (tasks)",
+     "spec": "./tasks.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -105,6 +116,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./storage.js\"",
+     "plain": "Works together with another crew member (storage)",
+     "spec": "./storage.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -135,6 +148,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./format.js\"",
+     "plain": "Works together with another crew member (format)",
+     "spec": "./format.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -165,6 +180,8 @@
       "local-import"
      ],
      "text": "Imports the crew file \"./sync.js\"",
+     "plain": "Works together with another crew member (sync)",
+     "spec": "./sync.js",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -217,6 +234,7 @@
      "tags": [],
      "derived": true,
      "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
      "code": []
     }
    ],
@@ -252,6 +270,7 @@
      "tags": [],
      "derived": true,
      "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
      "code": []
     }
    ],
@@ -289,6 +308,7 @@
       "file-module"
      ],
      "text": "Imports the file module \"node:fs\"",
+     "plain": "Is able to read and write files",
      "rea": "graph.edges[imports]",
      "code": [
       {
@@ -320,6 +340,7 @@
       "file-read"
      ],
      "text": "Reads a file (readFileSync)",
+     "plain": "Reads a file on your computer",
      "code": [
       {
        "n": 7,
@@ -350,6 +371,7 @@
       "file-write"
      ],
      "text": "Writes a file (writeFileSync)",
+     "plain": "Writes to a file on your computer",
      "code": [
       {
        "n": 14,
@@ -401,6 +423,7 @@
      "tags": [],
      "derived": true,
      "text": "REA found no imports, requests, file access or user-info reads in this file.",
+     "plain": "The scanner found nothing worth noting here. This part just does its small job quietly.",
      "code": []
     }
    ],
@@ -438,6 +461,7 @@
       "hidden-code"
      ],
      "text": "Hides a string in base64. REA found the text; decoded here, it reads \"collect.quiet-courier.example\"",
+     "plain": "Hides an address in scrambled text (it unscrambles to \"collect.quiet-courier.example\")",
      "rea": "semantic_graph.nodes[literal]",
      "code": [
       {
@@ -468,6 +492,7 @@
       "hidden-code"
      ],
      "text": "Loads a module whose name is only worked out while running: import(MODULE)",
+     "plain": "Quietly loads a helper whose name is only worked out while the app is running",
      "rea": "graph.edges[imports, dynamic-import]",
      "code": [
       {
@@ -498,6 +523,7 @@
       "network"
      ],
      "text": "Talks to the route \"/t\"",
+     "plain": "Talks to a specific page on a server: /t",
      "rea": "graph.nodes[endpoint]",
      "code": [
       {
