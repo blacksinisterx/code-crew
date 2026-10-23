@@ -4,6 +4,8 @@
 
 Every crew member is a code file. Every clue card is a **real finding from [REA](https://github.com/morluto/rea)**, a reverse-engineering tool, run on small sample apps built for this game. Each card shows the exact file, line and column, and the real line of code.
 
+![A playthrough of case 1: ask, present the clue, contradiction, vote, case closed](docs/media/code-crew-demo.gif)
+
 ## Play
 
 Three cases, each a tiny app with six code files:

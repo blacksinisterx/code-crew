@@ -2,3 +2,5 @@ tools/node_modules/
 web/node_modules/
 web/dist/
 *.log
+docs/media/raw/
+docs/media/frames/
