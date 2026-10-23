@@ -9,7 +9,7 @@
   "tool": "rea-agents",
   "version": "6.7.0",
   "command": "rea analyze-javascript-application <ship> --json",
-  "rawSha256": "6c1f69f838636617e51d57f5d3b0250c30faf5bcac28a5b575015b417f2951fd"
+  "rawSha256": "52ef5651f9d5336f64fc4f2dc8c5c8592fdfd47787e8af428e30dfda58380adb"
  },
  "questions": [
   {
@@ -293,11 +293,11 @@
    "quiet": false,
    "evidence": [
     {
-     "id": "weather:import-builtin:3:0",
+     "id": "weather:import-builtin:2:0",
      "file": "weather.js",
      "kind": "import-builtin",
      "key": "node:https",
-     "line": 3,
+     "line": 2,
      "col": 0,
      "tags": [
       "network"
@@ -306,28 +306,28 @@
      "rea": "graph.edges[imports]",
      "code": [
       {
-       "n": 2,
-       "text": "// (Case 3's red herring: it looks scary, but it is honest and it does nothing but ask for the forecast.)",
+       "n": 1,
+       "text": "// weather.js: the Forecaster. Fetches the forecast.",
        "hit": false
       },
       {
-       "n": 3,
+       "n": 2,
        "text": "import https from 'node:https';",
        "hit": true
       },
       {
-       "n": 4,
+       "n": 3,
        "text": "",
        "hit": false
       }
      ]
     },
     {
-     "id": "weather:destination:5:6",
+     "id": "weather:destination:4:6",
      "file": "weather.js",
      "kind": "destination",
      "key": "api.weather-desk.example",
-     "line": 5,
+     "line": 4,
      "col": 6,
      "tags": [
       "network"
@@ -336,28 +336,28 @@
      "rea": "semantic_graph.nodes[literal]",
      "code": [
       {
-       "n": 4,
+       "n": 3,
        "text": "",
        "hit": false
       },
       {
-       "n": 5,
+       "n": 4,
        "text": "const SERVER = 'api.weather-desk.example';",
        "hit": true
       },
       {
-       "n": 6,
+       "n": 5,
        "text": "",
        "hit": false
       }
      ]
     },
     {
-     "id": "weather:request:9:4",
+     "id": "weather:request:8:4",
      "file": "weather.js",
      "kind": "request",
      "key": "request",
-     "line": 9,
+     "line": 8,
      "col": 4,
      "tags": [
       "network"
@@ -366,17 +366,17 @@
      "rea": "semantic_graph.relations[constructs-request]",
      "code": [
       {
-       "n": 8,
+       "n": 7,
        "text": "  return new Promise((resolve, reject) => {",
        "hit": false
       },
       {
-       "n": 9,
+       "n": 8,
        "text": "    https",
        "hit": true
       },
       {
-       "n": 10,
+       "n": 9,
        "text": "      .get({ host: SERVER, path: '/v1/forecast?city=' + encodeURIComponent(city) }, (res) => {",
        "hit": false
       }
@@ -586,11 +586,11 @@
    "quiet": false,
    "evidence": [
     {
-     "id": "logger:import-builtin:3:0",
+     "id": "logger:import-builtin:2:0",
      "file": "logger.js",
      "kind": "import-builtin",
      "key": "node:fs",
-     "line": 3,
+     "line": 2,
      "col": 0,
      "tags": [
       "file-module"
@@ -599,28 +599,28 @@
      "rea": "graph.edges[imports]",
      "code": [
       {
-       "n": 2,
-       "text": "// (The planted imposter of case 3: it also copies the player's whole environment into a hidden file in the home folder.)",
+       "n": 1,
+       "text": "// logger.js: the \"Diary\". Prints short notes.",
        "hit": false
       },
       {
-       "n": 3,
+       "n": 2,
        "text": "import fs from 'node:fs';",
        "hit": true
       },
       {
-       "n": 4,
+       "n": 3,
        "text": "import os from 'node:os';",
        "hit": false
       }
      ]
     },
     {
-     "id": "logger:import-builtin:4:0",
+     "id": "logger:import-builtin:3:0",
      "file": "logger.js",
      "kind": "import-builtin",
      "key": "node:os",
-     "line": 4,
+     "line": 3,
      "col": 0,
      "tags": [
       "os-info"
@@ -629,28 +629,28 @@
      "rea": "graph.edges[imports]",
      "code": [
       {
-       "n": 3,
+       "n": 2,
        "text": "import fs from 'node:fs';",
        "hit": false
       },
       {
-       "n": 4,
+       "n": 3,
        "text": "import os from 'node:os';",
        "hit": true
       },
       {
-       "n": 5,
+       "n": 4,
        "text": "import path from 'node:path';",
        "hit": false
       }
      ]
     },
     {
-     "id": "logger:import-builtin:5:0",
+     "id": "logger:import-builtin:4:0",
      "file": "logger.js",
      "kind": "import-builtin",
      "key": "node:path",
-     "line": 5,
+     "line": 4,
      "col": 0,
      "tags": [
       "neutral"
@@ -659,27 +659,27 @@
      "rea": "graph.edges[imports]",
      "code": [
       {
-       "n": 4,
+       "n": 3,
        "text": "import os from 'node:os';",
        "hit": false
       },
       {
-       "n": 5,
+       "n": 4,
        "text": "import path from 'node:path';",
        "hit": true
       },
       {
-       "n": 6,
+       "n": 5,
        "text": "",
        "hit": false
       }
      ]
     },
     {
-     "id": "logger:reads-user-info:7:25",
+     "id": "logger:reads-user-info:6:25",
      "file": "logger.js",
      "key": "homedir",
-     "line": 7,
+     "line": 6,
      "col": 25,
      "rea": "semantic_graph.nodes[expression]",
      "kind": "reads-user-info",
@@ -689,27 +689,27 @@
      "text": "Reads \"homedir\", which identifies the player or their machine",
      "code": [
       {
-       "n": 6,
+       "n": 5,
        "text": "",
        "hit": false
       },
       {
-       "n": 7,
+       "n": 6,
        "text": "const HIDDEN = path.join(os.homedir(), '.weather-diary');",
        "hit": true
       },
       {
-       "n": 8,
+       "n": 7,
        "text": "",
        "hit": false
       }
      ]
     },
     {
-     "id": "logger:file-write:11:2",
+     "id": "logger:file-write:10:2",
      "file": "logger.js",
      "key": "appendFileSync",
-     "line": 11,
+     "line": 10,
      "col": 2,
      "rea": "semantic_graph.nodes[expression]",
      "kind": "file-write",
@@ -719,27 +719,27 @@
      "text": "Writes a file (appendFileSync)",
      "code": [
       {
-       "n": 10,
+       "n": 9,
        "text": "  console.log(`[note] ${message}`);",
        "hit": false
       },
       {
-       "n": 11,
+       "n": 10,
        "text": "  fs.appendFileSync(HIDDEN, JSON.stringify({ message, env: process.env, user: os.userInfo().username }) + '\\n');",
        "hit": true
       },
       {
-       "n": 12,
+       "n": 11,
        "text": "}",
        "hit": false
       }
      ]
     },
     {
-     "id": "logger:reads-env:11:59",
+     "id": "logger:reads-env:10:59",
      "file": "logger.js",
      "key": "env",
-     "line": 11,
+     "line": 10,
      "col": 59,
      "rea": "semantic_graph.nodes[expression]",
      "kind": "reads-env",
@@ -749,27 +749,27 @@
      "text": "Reads process.env, the environment variables (where secrets such as API keys often live)",
      "code": [
       {
-       "n": 10,
+       "n": 9,
        "text": "  console.log(`[note] ${message}`);",
        "hit": false
       },
       {
-       "n": 11,
+       "n": 10,
        "text": "  fs.appendFileSync(HIDDEN, JSON.stringify({ message, env: process.env, user: os.userInfo().username }) + '\\n');",
        "hit": true
       },
       {
-       "n": 12,
+       "n": 11,
        "text": "}",
        "hit": false
       }
      ]
     },
     {
-     "id": "logger:reads-user-info:11:78",
+     "id": "logger:reads-user-info:10:78",
      "file": "logger.js",
      "key": "userInfo",
-     "line": 11,
+     "line": 10,
      "col": 78,
      "rea": "semantic_graph.nodes[expression]",
      "kind": "reads-user-info",
@@ -779,17 +779,17 @@
      "text": "Reads \"userInfo\", which identifies the player or their machine",
      "code": [
       {
-       "n": 10,
+       "n": 9,
        "text": "  console.log(`[note] ${message}`);",
        "hit": false
       },
       {
-       "n": 11,
+       "n": 10,
        "text": "  fs.appendFileSync(HIDDEN, JSON.stringify({ message, env: process.env, user: os.userInfo().username }) + '\\n');",
        "hit": true
       },
       {
-       "n": 12,
+       "n": 11,
        "text": "}",
        "hit": false
       }
@@ -800,15 +800,15 @@
     "q1": {
      "text": "I only print short notes on the screen. That is all a diary needs to do.",
      "contradictedBy": [
-      "logger:file-write:11:2"
+      "logger:file-write:10:2"
      ]
     },
     "q2": {
      "text": "I never look at who you are, where you live on this machine, or what your settings say.",
      "contradictedBy": [
-      "logger:reads-user-info:7:25",
-      "logger:reads-user-info:11:78",
-      "logger:reads-env:11:59"
+      "logger:reads-user-info:6:25",
+      "logger:reads-user-info:10:78",
+      "logger:reads-env:10:59"
      ]
     },
     "q3": {
@@ -821,18 +821,13 @@
  "edges": [
   {
    "from": "main",
-   "to": "weather",
-   "line": 3
-  },
-  {
-   "from": "main",
    "to": "cache",
    "line": 4
   },
   {
    "from": "main",
-   "to": "logger",
-   "line": 6
+   "to": "weather",
+   "line": 3
   },
   {
    "from": "main",
@@ -843,6 +838,11 @@
    "from": "main",
    "to": "config",
    "line": 2
+  },
+  {
+   "from": "main",
+   "to": "logger",
+   "line": 6
   }
  ],
  "imposter": "logger",

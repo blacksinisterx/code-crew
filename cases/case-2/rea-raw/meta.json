@@ -2,5 +2,5 @@
  "version": "6.7.0",
  "node": "22.23.4",
  "command": "rea analyze-javascript-application <ship> --json",
- "analyzedAt": "2026-10-23T00:18:01.666Z"
+ "analyzedAt": "2026-10-23T00:27:07.593Z"
 }

@@ -1,5 +1,4 @@
-// analytics.js: "Telemetry". Says it only counts how often the game is played.
-// (This file is the planted imposter of case 1: it also sends the player's score and name out of the ship.)
+// analytics.js: "Telemetry". Counts how often the game is played.
 import https from 'node:https';
 import os from 'node:os';
 

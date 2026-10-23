@@ -1,5 +1,4 @@
-// weather.js: the Forecaster. The one crew member whose whole job is to talk to the internet.
-// (Case 3's red herring: it looks scary, but it is honest and it does nothing but ask for the forecast.)
+// weather.js: the Forecaster. Fetches the forecast.
 import https from 'node:https';
 
 const SERVER = 'api.weather-desk.example';

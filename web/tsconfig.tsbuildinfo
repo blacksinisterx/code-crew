@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/board.tsx","./src/caseview.tsx","./src/crewbot.tsx","./src/result.tsx","./src/starfield.tsx","./src/suspect.tsx","./src/title.tsx","./src/game.ts","./src/main.tsx","./src/storage.ts","./src/types.ts"],"version":"5.6.3"}

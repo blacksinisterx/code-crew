@@ -34,6 +34,14 @@ for (const id of caseIds) {
     }
   });
 
+  test(`${id}: no file in the ship gives the game away`, () => {
+    // clue cards show real lines of code, so a comment like "the planted imposter" would spoil the case
+    const cfg = JSON.parse(readFileSync(join(ROOT, 'cases', id, 'case.config.json'), 'utf8'));
+    for (const f of readdirSync(join(ROOT, 'cases', id, cfg.shipDir)).filter((n) => n.endsWith('.js'))) {
+      assert.doesNotMatch(readFileSync(join(ROOT, 'cases', id, cfg.shipDir, f), 'utf8'), /imposter|impostor|planted|red herring|spoiler/i, `${id}/${f} contains a spoiler word`);
+    }
+  });
+
   test(`${id}: exactly the imposter lies, and every lie can be shown with a clue`, () => {
     const built = loadBuilt(id);
     const liars = built.crew.filter((m) => Object.values(m.claims).some((c) => c.contradictedBy.length));

