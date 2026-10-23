@@ -1,0 +1,4 @@
+* text=auto eol=lf
+cases/*/rea-raw/* -text
+*.gif binary
+*.mp4 binary
