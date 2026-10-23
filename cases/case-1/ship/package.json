@@ -1,0 +1,7 @@
+{
+  "name": "mini-station",
+  "version": "1.0.0",
+  "description": "A tiny score-keeping game. The ship in Code Crew case 1.",
+  "type": "module",
+  "main": "main.js"
+}

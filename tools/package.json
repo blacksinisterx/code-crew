@@ -1,0 +1,6 @@
+{
+  "name": "code-crew-tools",
+  "private": true,
+  "description": "Pinned REA for building cases. Needs Node 22.19+ (portable copy in D:/tools).",
+  "devDependencies": { "rea-agents": "6.7.0" }
+}
